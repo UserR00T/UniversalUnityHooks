@@ -1,0 +1,39 @@
+﻿<Properties StartupConfiguration="{E08F5A15-3083-434E-89FF-900BE91D68B5}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ConsoleMonitor/Program.cs">
+    <Files>
+      <File FileName="HooksInjector/Program.cs" Line="67" Column="41" />
+      <File FileName="HooksInjector/Injector.cs" Line="29" Column="64" />
+      <File FileName="HooksInjector/ScriptsCompiler.cs" Line="33" Column="96" />
+      <File FileName="ConsoleMonitor/Program.cs" Line="58" Column="17" />
+      <File FileName="HooksInjector/ScriptsParser.cs" Line="14" Column="21" />
+      <File FileName="../BPGame/Scripts/DM.cs" Line="108" Column="2" />
+      <File FileName="HookAttribute/HookAttribute.cs" Line="13" Column="3" />
+      <File FileName="../BrokeProtocol/Scripts/test.cs" Line="11" Column="36" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="UnityHooks" expanded="True">
+            <Node name="ConsoleMonitor" expanded="True">
+              <Node name="Program.cs" selected="True" />
+            </Node>
+            <Node name="HookAttribute" expanded="True">
+              <Node name="References" expanded="True" />
+            </Node>
+            <Node name="HooksInjector" expanded="True">
+              <Node name="References" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.HooksInjector PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.ItemProperties.ConsoleMonitor PreferredExecutionTarget="MonoDevelop.Default" />
+  <MultiItemStartupConfigurations />
+</Properties>

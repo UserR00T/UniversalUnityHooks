@@ -1,0 +1,11 @@
+R:/C#/UnityHooks/HookAttribute/bin/Debug/HookAttribute.dll
+R:/C#/UnityHooks/HookAttribute/bin/Debug/HookAttribute.pdb
+R:/C#/UnityHooks/HookAttribute/obj/Debug/HookAttribute.csprojResolveAssemblyReference.cache
+R:/C#/UnityHooks/HookAttribute/obj/Debug/HookAttribute.dll
+R:/C#/UnityHooks/HookAttribute/obj/Debug/HookAttribute.pdb
+/home/dbk/Documents/BPGame/bpgameserver_Data/Managed/HookAttribute.dll
+/home/dbk/Documents/BPGame/bpgameserver_Data/Managed/HookAttribute.pdb
+/home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.csprojResolveAssemblyReference.cache
+/home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.csproj.CoreCompileInputs.cache
+/home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.dll
+/home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.pdb
