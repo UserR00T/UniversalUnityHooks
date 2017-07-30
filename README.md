@@ -23,14 +23,19 @@ The inital motivation behind the project was to provide a way for server owners 
 
 ## Installation
 
-Assuming Linux (x64), For windows. Build the files from Visual Studio or under Bash For Windows
+Assuming Linux (x64)
+
+For windows:
+
+* Change `/`'s to `\`'s for file names in the HooksInjector Project.
+* Build the files from Visual Studio or under Bash For Windows
 Prerequites:
-mono-complete
+* mono-complete
 
 To build the files from source and install them simply:
 
-Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
-Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` dll's in $Gamedir
+*Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
+*Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` dll's in $Gamedir
 
 
 ## API Reference
