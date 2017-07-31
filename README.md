@@ -49,7 +49,8 @@ The program is fairly straight forward, to hook a method, simply put
 Then supply the instance as the first variable, and the rest of the variables as refs.
 So if I were to want to modify Damage of the SvPlayer Class with variables otherId and damage, That would become
 ```cs
-damage(SvPlayer player, ref int otherId, ref float damage);
+    [Hook("SvPlayer.Damage")]
+    public static bool Damage(SvPlayer player, ref DamageIndex type, ref float amount, ref ShPlayer attacker, ref Collider collider)
 ```
 
 ## License
