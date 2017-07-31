@@ -29,13 +29,14 @@ For windows:
 
 * Change `/`'s to `\`'s for file names in the HooksInjector Project.
 * Build the files from Visual Studio or under Bash For Windows
+
 Prerequites:
 * mono-complete
 
 To build the files from source and install them simply:
 
-*Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
-*Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` dll's in $Gamedir
+* Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
+* Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` dll's in $Gamedir
 
 To run the program do `mono HooksInjector.exe`(linux) or just run the (windows)
 
