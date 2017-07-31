@@ -30,7 +30,7 @@ namespace HooksInjector
         {
             CSharpCodeProvider provider = new CSharpCodeProvider();
 
-            string outputPath = "Plugins\\" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
+            string outputPath = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
             CompilerParameters compilerParams = new CompilerParameters
             {
                 GenerateExecutable = false,

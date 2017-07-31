@@ -27,7 +27,7 @@ namespace HooksInjector
 			ScriptsParser parser = new ScriptsParser();
 			ScriptsCompiler compiler = new ScriptsCompiler(PLUGINS_DIRECTORY, _managedFolder);
 
-			string gameAssemblyPath = _managedFolder + "\\Assembly-CSharp.dll";
+			string gameAssemblyPath = _managedFolder + "/Assembly-CSharp.dll";
 
 			if (!File.Exists(gameAssemblyPath))
 			{
@@ -69,7 +69,7 @@ namespace HooksInjector
 
 			foreach (var pluginFile in Directory.GetFiles(PLUGINS_DIRECTORY))
 			{
-				string pluginDestPath = _managedFolder + "\\" + new FileInfo(pluginFile).Name;
+				string pluginDestPath = _managedFolder + "/" + new FileInfo(pluginFile).Name;
 				if(File.Exists(pluginDestPath))
 				{
 					File.Delete(pluginDestPath);
@@ -107,7 +107,7 @@ namespace HooksInjector
 			{
 				if (directory.EndsWith("_Data"))
 				{
-					return directory + "\\Managed";
+					return directory + "/Managed";
 				}
 			}
 
