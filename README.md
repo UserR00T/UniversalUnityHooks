@@ -55,4 +55,4 @@ damage(SvPlayer player, ref int otherId, ref float damage);
 
 ## License
 
-This code is licenced under the GNU GPL3 Licence, Information can be found by clicking on it at the top of the repository.
+This code is licenced under the MIT Licence, Information can be found by clicking on it at the top of the repository.
