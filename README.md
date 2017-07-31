@@ -56,3 +56,5 @@ damage(SvPlayer player, ref int otherId, ref float damage);
 ## License
 
 This code is licenced under the GNU GPL3 Licence, Information can be found by clicking on it at the top of the repository.
+
+Mono.Cecil was created by @jbevain https://github.com/jbevain/cecil
