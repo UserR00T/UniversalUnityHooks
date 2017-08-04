@@ -1,0 +1,6 @@
+{
+  "language": "csharp",
+  "solution": "UnityHooks.sln",
+  "dist": "trusty",
+  "os": "linux"
+}
