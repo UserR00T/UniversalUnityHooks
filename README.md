@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/DeathByKorea/UniversalUnityHooks.svg?branch=master)](https://travis-ci.org/DeathByKorea/UniversalUnityHooks)
+
 ## Synopsis
 
 UniversalUnityHooks aims to bring a adaptable modding API to any unity game. This is acomplished by hooking into methods found in the Assembly-CSharp.dll and modifying them while avoiding having to decompile and recompile.
