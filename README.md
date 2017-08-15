@@ -58,3 +58,8 @@ So if I were to want to modify Damage of the SvPlayer Class with variables Damag
 ## License
 
 This code is licenced under the MIT Licence, Information can be found by clicking on it at the top of the repository.
+
+
+##Credits
+
+Ardivaba: https://github.com/Ardivaba
