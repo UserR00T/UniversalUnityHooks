@@ -45,6 +45,8 @@ namespace HooksInjector
                 if (file.EndsWith(".dll") && !file.Contains("msc") && !file.Contains(("System")))
 				{
 					compilerParams.ReferencedAssemblies.Add(file);
+					compilerParams.ReferencedAssemblies.Add("System.Core.dll");
+
 				}
 			}
 
