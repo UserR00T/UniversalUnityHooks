@@ -42,7 +42,7 @@ namespace HooksInjector
 
 			foreach (var file in Directory.GetFiles(_managedFolder))
 			{
-                if (file.EndsWith(".dll") && !file.Contains("msc") && !file.Contains(("System")))
+                if (file.EndsWith(".dll") && !file.Contains("msc"))
 				{
 					compilerParams.ReferencedAssemblies.Add(file);
 				}
