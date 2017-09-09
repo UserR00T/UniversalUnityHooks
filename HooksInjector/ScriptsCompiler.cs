@@ -28,7 +28,8 @@ namespace HooksInjector
 
         public string CompileScript(string scriptFile)
         {
-            CSharpCodeProvider provider = new CSharpCodeProvider();
+
+			CSharpCodeProvider provider = new CSharpCodeProvider();
 
             string outputPath = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
             CompilerParameters compilerParams = new CompilerParameters
@@ -42,7 +43,7 @@ namespace HooksInjector
 
 			foreach (var file in Directory.GetFiles(_managedFolder))
 			{
-                if (file.EndsWith(".dll") && !file.Contains("msc") && !file.Contains(("System")))
+                if (file.EndsWith(".dll") && !file.Contains("msc"))
 				{
 					compilerParams.ReferencedAssemblies.Add(file);
 					compilerParams.ReferencedAssemblies.Add("System.Core.dll");
