@@ -28,10 +28,13 @@ namespace HooksInjector
 		{
 			CreateFiles();
 			managedFolder = GetManaged();
-			var program = new Program()
-			{
-				gArgs = args
-			};
+            if (args != null)
+            {
+                var program = new Program()
+                {
+                    gArgs = args
+                };
+            }
 			var parser = new ScriptsParser();
 			var compiler = new ScriptsCompiler(pluginsDir, managedFolder);
 			string assemblyPath = managedFolder + "/Assembly-CSharp.dll";
