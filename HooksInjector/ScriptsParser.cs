@@ -44,15 +44,11 @@ namespace HooksInjector
 						return null;
 					}
 
-					bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") <= -1;
+                    bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") > -1 ? false : true;
 
 					Console.WriteLine(methodName + "Can Block " + methodCanBlock);
 
-					bool hookEnd = false;
-					if (line.Contains("true"))
-					{
-						hookEnd = true;
-					}
+					bool hookEnd = false || line.Contains("true");
 					hooks.Add(new ParsedHook
 					{
 						fullName = methodName,

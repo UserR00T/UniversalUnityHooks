@@ -4,15 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HooksInjector
+public class HookAttribute : Attribute
 {
-	class HookAttribute : Attribute
+	private string _fullName;
+	public HookAttribute(string fullName, bool end = false)
 	{
-		private string hookName;
-		public HookAttribute(string fullName, bool end = false)
-		{
-			hookName = fullName;
-		}
-
+		_fullName = fullName;
 	}
 }
