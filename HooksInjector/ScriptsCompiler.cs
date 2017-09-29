@@ -31,7 +31,7 @@ namespace HooksInjector
 			var options = new Options();
 			var main = new Program();
 			CSharpCodeProvider provider = new CSharpCodeProvider();
-			string output = "Plugins/" + new FileInfo(scriptFile).Name.Replace("cs", "dll");
+			string output = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
 			CompilerParameters cp = new CompilerParameters();
 			cp.GenerateExecutable = false;
 			cp.OutputAssembly = output;
@@ -53,7 +53,7 @@ namespace HooksInjector
 
 			foreach (var file in Directory.GetFiles(managedFolder))
 			{
-                if (file.EndsWith("dll", StringComparison.CurrentCulture) && !file.Contains("msc") && !file.Contains("Core")) 
+                if (file.EndsWith(".dll", StringComparison.CurrentCulture) && !file.Contains("msc") && !file.Contains("Core")) 
 				{
 					cp.ReferencedAssemblies.Add(file);
                     cp.ReferencedAssemblies.Add("System.Core.dll");
