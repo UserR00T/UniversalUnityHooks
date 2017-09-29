@@ -32,18 +32,20 @@ namespace HooksInjector
 			cp.GenerateExecutable = false;
 			cp.OutputAssembly = output;
 			cp.WarningLevel = 1;
-
-			if (CommandLine.Parser.Default.ParseArguments(main.gArgs, options))
-			{
-				foreach (var refs in options.refs)
-				{
-					cp.ReferencedAssemblies.Add(refs);
-				}
-				if (!options.optimize)
-				{
-					cp.CompilerOptions = "/optimize";
-				}
-			}
+            if (main.gArgs != null)
+            {
+                if (CommandLine.Parser.Default.ParseArguments(main.gArgs, options))
+                {
+                    foreach (var refs in options.refs)
+                    {
+                        cp.ReferencedAssemblies.Add(refs);
+                    }
+                    if (!options.optimize)
+                    {
+                        cp.CompilerOptions = "/optimize";
+                    }
+                }
+            }
 
 			foreach (var file in Directory.GetFiles(managedFolder))
 			{
