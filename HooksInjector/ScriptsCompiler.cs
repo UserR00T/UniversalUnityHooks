@@ -30,7 +30,8 @@ namespace HooksInjector
 		{
 			var options = new Options();
 			var main = new Program();
-			CSharpCodeProvider provider = new CSharpCodeProvider();
+			var compileoptions = new Dictionary<string, string> { { "CompilerVersion", "v3.5" } };
+			CSharpCodeProvider provider = new CSharpCodeProvider(compileoptions);
 			string output = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
 			CompilerParameters cp = new CompilerParameters();
 			cp.GenerateExecutable = false;
