@@ -23,7 +23,7 @@ namespace HooksInjector
 		{
 			if (!File.Exists(scriptFile))
 			{
-				Console.WriteLine(scriptFile + "doesn't exist!");
+				Console.WriteLine(scriptFile + " doesn't exist!");
 				Console.Read();
 				return null;
 			}
@@ -39,14 +39,14 @@ namespace HooksInjector
 					string methodName = Regex.Match(line, "\"([^\"]*)\"").Groups[1].Value;
 					if (methodName.Length < 1)
 					{
-						Console.WriteLine("HooksInjector: ERROR: " + scriptFile + "Contains incomplete hook on line: " + i);
+						Console.WriteLine("HooksInjector: ERROR: " + scriptFile + " Contains incomplete hook on line: " + i);
 						Console.Read();
 						return null;
 					}
 
 					bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") <= -1;
 
-					Console.WriteLine(methodName + "Can Block" + methodCanBlock);
+					Console.WriteLine(methodName + "Can Block " + methodCanBlock);
 
 					bool hookEnd = false;
 					if (line.Contains("true"))

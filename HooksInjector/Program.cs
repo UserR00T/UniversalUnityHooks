@@ -65,7 +65,7 @@ namespace HooksInjector
 
 				if (!File.Exists(pluginFile))
 				{
-					Console.WriteLine("HooksInjector: ERROR: " + pluginFile + "Was not compiled sucessfully.");
+					Console.WriteLine("HooksInjector: ERROR: " + pluginFile + " Was not compiled sucessfully.");
 					Console.ReadLine();
 					return;
 
