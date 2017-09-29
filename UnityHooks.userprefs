@@ -1,13 +1,23 @@
 ﻿<Properties StartupConfiguration="{112FE592-133F-497D-8DAB-81EB6BBAB0B6}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="HooksInjector/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="HooksInjector/ScriptsCompiler.cs">
     <Files>
-      <File FileName="HooksInjector/Program.cs" Line="10" Column="19" />
-      <File FileName="HooksInjector/Injector.cs" Line="83" Column="6" />
-      <File FileName="HooksInjector/ScriptsCompiler.cs" Line="50" Column="22" />
-      <File FileName="HooksInjector/ScriptsParser.cs" Line="47" Column="63" />
-      <File FileName="HookAttribute/HookAttribute.cs" Line="19" Column="1" />
+      <File FileName="HooksInjector/Program.cs" Line="62" Column="16" />
+      <File FileName="HooksInjector/Injector.cs" Line="76" Column="3" />
+      <File FileName="HooksInjector/ScriptsCompiler.cs" Line="69" Column="80" />
+      <File FileName="HooksInjector/ScriptsParser.cs" Line="62" Column="23" />
+      <File FileName="HookAttribute/HookAttribute.cs" Line="14" Column="2" />
       <File FileName="HooksInjector/packages.config" Line="1" Column="1" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="UnityHooks" expanded="True">
+            <Node name="HookAttribute" expanded="True" />
+            <Node name="HooksInjector" expanded="True" selected="True" />
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
