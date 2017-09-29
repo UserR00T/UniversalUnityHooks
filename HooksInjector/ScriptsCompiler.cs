@@ -56,7 +56,6 @@ namespace HooksInjector
                 if (file.EndsWith("dll", StringComparison.CurrentCulture) && !file.Contains("msc")) 
 				{
 					cp.ReferencedAssemblies.Add(file);
-                    cp.ReferencedAssemblies.Add("System.Core.dll");
 				}
 			}
 
