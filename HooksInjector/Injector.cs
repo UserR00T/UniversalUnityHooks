@@ -73,33 +73,24 @@ namespace HooksInjector
 				if (hook.canBlock)
 				{
 					if (method.Parameters.Count > 0)
-					{
 						injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn);
-					}
 					else
-					{
 						injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn);
-					}
 				}
 				else
 				{
 					if (method.Parameters.Count > 0)
-					{
 						injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef);
-					}
 					else
-					{
 						injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance);
-					}
 				}
+
 				if (hook.hookEnd)
 				{
 					injector.Inject(-1, null, InjectDirection.Before);
 				}
 				else
-				{
 					injector.Inject();
-				}
 				Console.WriteLine("HooksInjector: Hooked " + rawmethodName + ".");
 			}
 			catch (Exception e)

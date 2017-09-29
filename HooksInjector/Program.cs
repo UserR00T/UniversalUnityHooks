@@ -33,7 +33,6 @@ namespace HooksInjector
 		public static void Main(string[] args)
 		{
 			CreateFiles();
-			managedFolder = GetManaged();
             if (args != null)
             {
                 var program = new Program()
@@ -104,6 +103,8 @@ namespace HooksInjector
 				Directory.CreateDirectory(pluginsDir);
 				Console.WriteLine("Plugins Directory created");
 			}
+			managedFolder = GetManaged();
+
 		}
 		private static string GetManaged()
 		{
