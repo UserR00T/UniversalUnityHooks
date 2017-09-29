@@ -1,14 +1,7 @@
-﻿using Microsoft.CSharp;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using Mono.Cecil;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using CommandLine;
-using CommandLine.Text;
 namespace HooksInjector
 {
 	class Options
@@ -99,7 +92,7 @@ namespace HooksInjector
 			}
 			if (!Directory.Exists(pluginsDir))
 			{
-				Directory.CreateDirectory(scriptsDir);
+				Directory.CreateDirectory(pluginsDir);
 				Console.WriteLine("Plugins Directory created");
 			}
 		}
@@ -115,19 +108,6 @@ namespace HooksInjector
 			Console.WriteLine("HooksInjector: ERROR: Managed folder not found. Place HooksInjector in $GameDir");
 			return null;
 		}
-		private static string[] getArgs(string[] args)
-		{
-			foreach (var arg in args)
-			{
-				if (arg.StartsWith("-") || arg.StartsWith("--"))
-				{
 
-
-
-
-					return args;
-				}
-			}
-		}
 	}
 }

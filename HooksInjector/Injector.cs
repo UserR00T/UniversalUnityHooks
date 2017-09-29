@@ -1,10 +1,7 @@
 ﻿using Mono.Cecil;
 using Mono.Cecil.Inject;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 namespace HooksInjector
 {
 	class Injector
@@ -25,15 +22,15 @@ namespace HooksInjector
 			var className = nameSplit[0];
 			var methodName = nameSplit[1];
 
-			var classType = gameAssembly.MainModule.GetType(className);
-			if (classType == null)
+			var methodClassType = gameAssembly.MainModule.GetType(className);
+			if (methodClassType == null)
 			{
 				Console.WriteLine("HooksInjector: ERROR: Class " + className + " Was not found in game assembly. Please check the spelling of the class.");
 				Console.ReadLine();
 				return;
 			}
 
-			var method = classType.GetMethod(methodName);
+			var method = methodClassType.GetMethod(methodName);
 
 			if (method == null)
 			{

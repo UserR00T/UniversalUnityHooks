@@ -59,7 +59,7 @@ namespace HooksInjector
 				}
 			}
 
-			return hooks.ToArray()
+            return hooks.ToArray();
 
 		}
 	}
