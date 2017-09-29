@@ -1,10 +1,10 @@
 ﻿<Properties StartupConfiguration="{112FE592-133F-497D-8DAB-81EB6BBAB0B6}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="HooksInjector/ScriptsParser.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="HooksInjector/Program.cs">
     <Files>
-      <File FileName="HooksInjector/Program.cs" Line="10" Column="1" />
+      <File FileName="HooksInjector/Program.cs" Line="10" Column="19" />
       <File FileName="HooksInjector/Injector.cs" Line="83" Column="6" />
-      <File FileName="HooksInjector/ScriptsCompiler.cs" Line="9" Column="1" />
-      <File FileName="HooksInjector/ScriptsParser.cs" Line="16" Column="4" />
+      <File FileName="HooksInjector/ScriptsCompiler.cs" Line="50" Column="22" />
+      <File FileName="HooksInjector/ScriptsParser.cs" Line="47" Column="63" />
       <File FileName="HookAttribute/HookAttribute.cs" Line="19" Column="1" />
       <File FileName="HooksInjector/packages.config" Line="1" Column="1" />
     </Files>
