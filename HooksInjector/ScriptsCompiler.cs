@@ -66,7 +66,7 @@ namespace HooksInjector
 			{
 				Console.WriteLine(error);
 			}
-			Console.WriteLine("Compiled script: " + scriptFile + " Sucessfully Managed folder was" + managedFolder);
+            Console.WriteLine("Compiled script: " + scriptFile + " Sucessfully");
 			return cp.OutputAssembly;
 
 		}
