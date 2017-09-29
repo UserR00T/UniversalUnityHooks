@@ -28,7 +28,7 @@ namespace HooksInjector
 		{
 			CreateFiles();
 			managedFolder = GetManaged();
-            if (args[0] != null)
+            if (args != null)
             {
                 var program = new Program()
                 {
