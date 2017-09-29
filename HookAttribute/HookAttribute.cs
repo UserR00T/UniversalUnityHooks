@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UUH2
+namespace HooksInjector
 {
 	class HookAttribute : Attribute
 	{
