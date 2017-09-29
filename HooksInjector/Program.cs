@@ -1,7 +1,13 @@
-﻿using System;
-using System.IO;
+﻿using Microsoft.CSharp;
 using Mono.Cecil;
-using CommandLine;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace HooksInjector
 {
 	class Options
