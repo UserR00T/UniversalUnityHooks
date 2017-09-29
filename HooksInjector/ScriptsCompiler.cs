@@ -1,133 +1,66 @@
 ﻿using Microsoft.CSharp;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.CodeDom.Compiler;
 using System.IO;
-using Mono.Cecil;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CommandLine;
-using CommandLine.Text;
+
 namespace HooksInjector
 {
-	class Options
+	public class ScriptsCompiler
 	{
-		[Option('r', "ref", Required = false, HelpText = "Adds external assembly references, from the Managed folder, GAC, or specified path.")]
-		public string[] refs { get; set; }
-
-		[Option('o', "nooptimize", HelpText = "Turns off Compiler Optimization, this can be useful for debugging.")]
-		public bool optimize { get; set; }
-
-		[ParserState]
-		public IParserState LastParserState { get; set; }
-	}
-
-	public class Program
-	{
-		public const string scriptsDir = "Scripts";
-		public const string pluginsDir = "Plugins";
-		public static string managedFolder;
-		public static string[] refAssemblys;
-		public string[] gArgs;
-
-		public static void Main(string[] args)
+		private string pluginsDir;
+		private string managedFolder;
+		public ScriptsCompiler(string plugins, string managed)
 		{
-			CreateFiles();
-			managedFolder = GetManaged();
-			var program = new Program()
-			{
-				gArgs = args
-			};
-			var parser = new ScriptsParser();
-			var compiler = new ScriptsCompiler(pluginsDir, managedFolder);
-			string assemblyPath = managedFolder + "/Assembly-CSharp.dll";
-			if (!File.Exists(assemblyPath))
-			{
-				Console.WriteLine("HooksInjector: ERROR: Could not find game assembly. Make sure you're running from the game's root dir.");
-				Console.Read();
-				return;
-			}
-			if (!File.Exists("Assembly-CSharp.dll"))
-			{
-				File.Copy(assemblyPath, "Assembly-CSharp.dll");
-
-			}
-			string origAssembly = "Assembly-CSharp.dll";
-			var gameAssembly = AssemblyDefinition.ReadAssembly(origAssembly);
-
-			foreach (var scriptfile in Directory.GetFiles(scriptsDir))
-			{
-				var hooks = parser.GetHooks(scriptfile);
-				string pluginFile = compiler.CompileScript(scriptfile);
-
-				if (!File.Exists(pluginFile))
-				{
-					Console.WriteLine("HooksInjector: ERROR: " + pluginFile + "Was not compiled sucessfully.");
-					Console.ReadLine();
-					return;
-
-				}
-
-				var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
-				foreach (var hook in hooks)
-				{
-					injector.InjectHook(hook);
-				}
-			}
-			gameAssembly.Write(assemblyPath);
-			Console.WriteLine("HooksInjector: Hooks inserted sucessfully!");
-
-			foreach (var plugin in Directory.GetFiles(pluginsDir))
-			{
-				string pluginDest = managedFolder + "/" + new FileInfo(plugin).Name;
-				if (File.Exists(pluginDest))
-				{
-					File.Delete(pluginDest);
-				}
-				File.Copy(plugin, pluginDest);
-			}
-			Console.WriteLine("HooksInjector: Plugins copied sucessfully!");
-		}
-
-		private static void CreateFiles()
-		{
-			if (!Directory.Exists(scriptsDir))
-			{
-				Directory.CreateDirectory(scriptsDir);
-				Console.WriteLine("Scripts Directory created");
-			}
+			pluginsDir = plugins;
+			managedFolder = managed;
 			if (!Directory.Exists(pluginsDir))
 			{
-				Directory.CreateDirectory(scriptsDir);
-				Console.WriteLine("Plugins Directory created");
+				Console.WriteLine("HooksInjector: ERROR: Plugins Directory does not exist! Check you have permission to create directories here.");
+				Console.Read();
+				return;
+
 			}
 		}
-		private static string GetManaged()
+
+		public string CompileScript(string scriptFile)
 		{
-			foreach (var directory in Directory.EnumerateDirectories((Directory.GetCurrentDirectory())))
+			var options = new Options();
+			var main = new Program();
+			CSharpCodeProvider provider = new CSharpCodeProvider();
+			string output = "Plugins/" + new FileInfo(scriptFile).Name.Replace("cs", ".dll");
+			CompilerParameters cp = new CompilerParameters();
+			cp.GenerateExecutable = false;
+			cp.OutputAssembly = output;
+			cp.WarningLevel = 1;
+
+			if (CommandLine.Parser.Default.ParseArguments(main.gArgs, options))
 			{
-				if (directory.EndsWith("_Data", StringComparison.CurrentCulture))
+				foreach (var refs in options.refs)
 				{
-					return directory + "/Managed";
+					cp.ReferencedAssemblies.Add(refs);
+				}
+				if (!options.optimize)
+				{
+					cp.CompilerOptions = "/optimize";
 				}
 			}
-			Console.WriteLine("HooksInjector: ERROR: Managed folder not found. Place HooksInjector in $GameDir");
-			return null;
-		}
-		private static string[] getArgs(string[] args)
-		{
-			foreach (var arg in args)
+
+			foreach (var file in Directory.GetFiles(managedFolder))
 			{
-				if (arg.StartsWith("-") || arg.StartsWith("--"))
+				if (file.EndsWith("dll", StringComparison.CurrentCulture) && !file.Contains("msc") && !file.Contains("sys"))
 				{
-
-
-
-
-					return args;
+					cp.ReferencedAssemblies.Add(file);
 				}
 			}
+
+			var results = provider.CompileAssemblyFromSource(cp, File.ReadAllText(scriptFile));
+			foreach (var error in results.Errors)
+			{
+				Console.WriteLine(error);
+			}
+			Console.WriteLine("Compiled script:" + scriptFile + "Sucessfully");
+			return cp.OutputAssembly;
+
 		}
 	}
 }
