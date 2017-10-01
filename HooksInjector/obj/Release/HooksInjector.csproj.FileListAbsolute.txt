@@ -20,11 +20,11 @@ F:/UnityHooks/HooksInjector/obj/Release/HooksInjector.pdb
 /home/dbk/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.csproj.CoreCompileInputs.cache
 /home/dbk/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.exe
 /home/dbk/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.pdb
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe.config
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.pdb
 /home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.csprojResolveAssemblyReference.cache
 /home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.csproj.HooksInjector.exe.config
 /home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.csproj.CoreCompileInputs.cache
 /home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.exe
 /home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Release/HooksInjector.pdb
-/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe.config
-/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe
-/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.pdb
