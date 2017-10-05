@@ -45,9 +45,8 @@ namespace HooksInjector
             }
 
             foreach (var file in Directory.GetFiles(managedFolder)) {
-                if (file.EndsWith(".dll", StringComparison.CurrentCulture) && !file.Contains("msc") && !file.Contains("Core")) {
+                if (file.EndsWith(".dll", StringComparison.CurrentCulture) && !file.Contains("msc")) {
                     cp.ReferencedAssemblies.Add(file);
-                    cp.ReferencedAssemblies.Add("System.Core.dll");
 
                 }
             }
