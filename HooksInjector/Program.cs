@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CommandLine;
 namespace HooksInjector
 {
@@ -94,7 +93,7 @@ namespace HooksInjector
 
         }
         static string GetManaged() {
-            foreach (var directory in Directory.EnumerateDirectories((Directory.GetCurrentDirectory()))) {
+            foreach (var directory in Directory.GetDirectories((Directory.GetCurrentDirectory()))) {
                 if (directory.EndsWith("_Data", StringComparison.CurrentCulture)) {
                     return directory + "/Managed";
                 }
