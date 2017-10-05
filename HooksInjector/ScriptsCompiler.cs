@@ -9,57 +9,55 @@ using System.IO;
 
 namespace HooksInjector
 {
-	class ScriptsCompiler
-	{
-		private string _pluginsDirectory;
-		private string _managedFolder;
-		public ScriptsCompiler(string pluginsDirectory, string managedFolder)
-		{
-			_pluginsDirectory = pluginsDirectory;
-			_managedFolder = managedFolder;
+    public class ScriptsCompiler
+    {
+        string pluginsDir;
+        string managedFolder;
+        public ScriptsCompiler(string plugins, string managed) {
+            pluginsDir = plugins;
+            managedFolder = managed;
+            if (!Directory.Exists(pluginsDir)) {
+                Console.WriteLine("HooksInjector: ERROR: Plugins Directory does not exist! Check you have permission to create directories here.");
+                Console.Read();
+                return;
 
-			if(!Directory.Exists(_pluginsDirectory))
-			{
-				Console.WriteLine("Plugins directory: " + _pluginsDirectory + " does not exist!");
-				Console.ReadLine();
-				return;
-			}
-		}
+            }
+        }
 
-        public string CompileScript(string scriptFile)
-        {
+        public string CompileScript(string scriptFile) {
+            var options = new Options();
+            var main = new Program();
+            CSharpCodeProvider provider = new CSharpCodeProvider();
+            string output = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
+            CompilerParameters cp = new CompilerParameters();
+            cp.GenerateExecutable = false;
+            cp.OutputAssembly = output;
+            cp.WarningLevel = 1;
+            if (main.gArgs != null) {
+                if (CommandLine.Parser.Default.ParseArguments(main.gArgs, options)) {
+                    foreach (var refs in options.Refs) {
+                        cp.ReferencedAssemblies.Add(refs);
+                    }
+                    if (!options.Optimize) {
+                        cp.CompilerOptions = "/optimize";
+                    }
+                }
+            }
 
-			CSharpCodeProvider provider = new CSharpCodeProvider();
+            foreach (var file in Directory.GetFiles(managedFolder)) {
+                if (file.EndsWith(".dll", StringComparison.CurrentCulture) && !file.Contains("msc")) {
+                    cp.ReferencedAssemblies.Add(file);
 
-            string outputPath = "Plugins/" + new FileInfo(scriptFile).Name.Replace(".cs", ".dll");
-            CompilerParameters compilerParams = new CompilerParameters
-            {
-                GenerateExecutable = false,
-                OutputAssembly = outputPath,
-                WarningLevel = 1,
+                }
+            }
 
+            var results = provider.CompileAssemblyFromSource(cp, File.ReadAllText(scriptFile));
+            foreach (var error in results.Errors) {
+                Console.WriteLine(error);
+            }
+            Console.WriteLine("Compiled script: " + scriptFile + " Sucessfully");
+            return cp.OutputAssembly;
 
-        };
-
-			foreach (var file in Directory.GetFiles(_managedFolder))
-			{
-                if (file.EndsWith(".dll") && !file.Contains("msc"))
-				{
-					compilerParams.ReferencedAssemblies.Add(file);
-					compilerParams.ReferencedAssemblies.Add("System.Core.dll");
-
-				}
-			}
-
-			CompilerResults results = provider.CompileAssemblyFromSource(compilerParams, File.ReadAllText(scriptFile));
-
-			foreach (var error in results.Errors)
-			{
-				Console.WriteLine(error);
-			}
-
-			Console.WriteLine("Compiled script: " + scriptFile);
-			return compilerParams.OutputAssembly;
-		}
-	}
+        }
+    }
 }
