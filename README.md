@@ -38,7 +38,7 @@ Prerequites:
 To build the files from source and install them simply:
 * If you need to add the references to Mono, they're in the Mono folder.
 * Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
-* Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` dll's in $Gamedir
+* Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` & `CommandLine` dll's in $Gamedir
 
 To run the program do `mono HooksInjector.exe`(linux) or just run the (windows)
 
