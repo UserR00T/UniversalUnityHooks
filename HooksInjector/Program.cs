@@ -53,27 +53,43 @@ namespace HooksInjector
             var gameAssembly = AssemblyDefinition.ReadAssembly(origAssembly);
 
             foreach (var dir in Directory.GetDirectories(scriptsDir)) {
+                Console.WriteLine("Searching Dirs " + dir);
                 foreach (var proj in Directory.GetFiles(dir)) {
+                    Console.WriteLine("Searching projects " + proj);
+
                     ScriptsParser.ParsedHook[] hooks = null;
                     string pluginFile = null;
-                    if (proj.EndsWith(".proj")) {
+                    if (proj.EndsWith("proj")) {
                         
 
-                        
+                        Console.WriteLine("In directory");
+                        Console.WriteLine("Operating System: " + System.Environment.OSVersion );
+                        string xbuildpath = null;
+                        if (System.Environment.OSVersion.ToString().Contains("Windows")) {
+                            xbuildpath = Environment.ExpandEnvironmentVariables("%ProgramW6432%") + "\\Mono\\lib\\mono\\xbuild\\14.0\\bin\\xbuild.exe";
+
+                        }
+                        else {
+                            xbuildpath = "msbuild";
+                        }
+                        Console.WriteLine("MSBuild Path: "+ xbuildpath);
+
                         var p = new Process {
                             StartInfo = {
-                                FileName = "xbuild.exe",
+                                
+                                FileName = xbuildpath,
                                 Arguments = $"/p:Configuration=Release {proj}",
                                 UseShellExecute = false,
                                 RedirectStandardOutput = true
                             }
                         };
                         p.Start();
-
+                        Console.WriteLine("Started MSBuild");
                         var output = p.StandardOutput.ReadToEnd();
                         p.WaitForExit();
-                        Console.WriteLine("XBuild Output: \n");
+                        Console.WriteLine("MSBuild Output: \n");
                         Console.WriteLine(output);
+                        Console.WriteLine("Finished Build");
                         pluginFile = proj.Replace("csproj", "dll");
                     }
                     else if (proj.EndsWith("cs")) {
