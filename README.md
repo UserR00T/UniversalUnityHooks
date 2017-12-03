@@ -7,7 +7,7 @@ UniversalUnityHooks aims to bring a adaptable modding API to any unity game. Thi
 ## Code Example
 
 ```cs
-public class printStart
+public class printStartPlugin
 {
 	[Hook("SvNetMan.StartServerNetwork")]
 	public static void startServerNetwork(SvNetMan man)
