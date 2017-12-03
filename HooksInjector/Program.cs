@@ -91,10 +91,8 @@ namespace HooksInjector
                 
                 
             }
-            /*
             
-             OLD CODE INCASE THIS IS BROKEN
-            foreach (var scriptfile in Directory.GetFiles(scriptsDir)) {
+                foreach (var scriptfile in Directory.GetFiles(scriptsDir)) {
                 var hooks = parser.GetHooks(scriptfile);
                 var pluginFile = compiler.CompileScript(scriptfile);
 
@@ -110,7 +108,7 @@ namespace HooksInjector
                     injector.InjectHook(hook);
                 }
             }
-            */
+            
             gameAssembly.Write(assemblyPath);
             Console.WriteLine("HooksInjector: Hooks inserted sucessfully!");
 

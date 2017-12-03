@@ -37,6 +37,7 @@ namespace HooksInjector
                 if (CommandLine.Parser.Default.ParseArguments(main.gArgs, options)) {
                     foreach (var refs in options.Refs) {
                         cp.ReferencedAssemblies.Add(refs);
+                        Console.WriteLine($"Adding assembly reference {refs}");
                     }
                     if (!options.Optimize) {
                         cp.CompilerOptions = "/optimize";
