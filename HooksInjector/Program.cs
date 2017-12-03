@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CommandLine;
+using Microsoft.Build.Framework;
 namespace HooksInjector
 {
     class Options
@@ -23,9 +24,9 @@ namespace HooksInjector
 
     public class Program
     {
-        public const string scriptsDir = "Scripts";
-        public const string pluginsDir = "Plugins";
-        public static string managedFolder;
+        private const string scriptsDir = "Scripts";
+        private const string pluginsDir = "Plugins";
+        private static string managedFolder;
         public static string[] refAssemblys;
         public string[] gArgs;
 
@@ -38,7 +39,7 @@ namespace HooksInjector
             }
             var parser = new ScriptsParser();
             var compiler = new ScriptsCompiler(pluginsDir, managedFolder);
-            string assemblyPath = managedFolder + "/Assembly-CSharp.dll";
+            var assemblyPath = managedFolder + "/Assembly-CSharp.dll";
             if (!File.Exists(assemblyPath)) {
                 Console.WriteLine("HooksInjector: ERROR: Could not find game assembly. Make sure you're running from the game's root dir.");
                 Console.Read();
@@ -48,12 +49,54 @@ namespace HooksInjector
                 File.Copy(assemblyPath, "Assembly-CSharp.dll");
 
             }
-            string origAssembly = "Assembly-CSharp.dll";
+            const string origAssembly = "Assembly-CSharp.dll";
             var gameAssembly = AssemblyDefinition.ReadAssembly(origAssembly);
 
+            foreach (var dir in Directory.GetDirectories(scriptsDir)) {
+                foreach (var proj in Directory.GetFiles(dir)) {
+                    ScriptsParser.ParsedHook[] hooks = null;
+                    string pluginFile = null;
+                    if (proj.EndsWith(".proj")) {
+                        
+
+                        
+                        var p = new Process {
+                            StartInfo = {
+                                FileName = "xbuild.exe",
+                                Arguments = $"/p:Configuration=Release {proj}",
+                                UseShellExecute = false,
+                                RedirectStandardOutput = true
+                            }
+                        };
+                        p.Start();
+
+                        var output = p.StandardOutput.ReadToEnd();
+                        p.WaitForExit();
+                        Console.WriteLine("XBuild Output: \n");
+                        Console.WriteLine(output);
+                        pluginFile = proj.Replace("csproj", "dll");
+                    }
+                    else if (proj.EndsWith("cs")) {
+                            hooks = parser.GetHooks(proj);
+                        
+                    }
+                    if (hooks != null && pluginFile != null)
+                    {
+                        var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
+                        foreach (var hook in hooks) {
+                            injector.InjectHook(hook);
+                        }
+                    }
+                }
+                
+                
+            }
+            /*
+            
+             OLD CODE INCASE THIS IS BROKEN
             foreach (var scriptfile in Directory.GetFiles(scriptsDir)) {
                 var hooks = parser.GetHooks(scriptfile);
-                string pluginFile = compiler.CompileScript(scriptfile);
+                var pluginFile = compiler.CompileScript(scriptfile);
 
                 if (!File.Exists(pluginFile)) {
                     Console.WriteLine("HooksInjector: ERROR: " + pluginFile + " Was not compiled sucessfully.");
@@ -67,11 +110,12 @@ namespace HooksInjector
                     injector.InjectHook(hook);
                 }
             }
+            */
             gameAssembly.Write(assemblyPath);
             Console.WriteLine("HooksInjector: Hooks inserted sucessfully!");
 
             foreach (var plugin in Directory.GetFiles(pluginsDir)) {
-                string pluginDest = managedFolder + "/" + new FileInfo(plugin).Name;
+                var pluginDest = managedFolder + "/" + new FileInfo(plugin).Name;
                 if (File.Exists(pluginDest)) {
                     File.Delete(pluginDest);
                 }
@@ -80,7 +124,7 @@ namespace HooksInjector
             Console.WriteLine("HooksInjector: Plugins copied sucessfully!");
         }
 
-        static void CreateFiles() {
+        private static void CreateFiles() {
             if (!Directory.Exists(scriptsDir)) {
                 Directory.CreateDirectory(scriptsDir);
                 Console.WriteLine("Scripts Directory created");
@@ -92,7 +136,8 @@ namespace HooksInjector
             managedFolder = GetManaged();
 
         }
-        static string GetManaged() {
+
+        private static string GetManaged() {
             foreach (var directory in Directory.GetDirectories((Directory.GetCurrentDirectory()))) {
                 if (directory.EndsWith("_Data", StringComparison.CurrentCulture)) {
                     return directory + "/Managed";
