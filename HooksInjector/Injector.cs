@@ -58,6 +58,7 @@ namespace HooksInjector
                 Console.ReadLine();
                 return;
             }
+            
             InjectionDefinition injector;
 
             try {

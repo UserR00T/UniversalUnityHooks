@@ -39,7 +39,7 @@ namespace HooksInjector
                         return null;
                     }
 
-                    bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") > -1 ? false : true;
+                    bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") <= -1;
 
                     Console.WriteLine(methodName + " Can Block: " + methodCanBlock);
 

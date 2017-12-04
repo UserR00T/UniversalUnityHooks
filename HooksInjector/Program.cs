@@ -54,20 +54,25 @@ namespace HooksInjector
 
             foreach (var dir in Directory.GetDirectories(scriptsDir)) {
                 Console.WriteLine("Searching Dirs " + dir);
+                string pluginFile= null;
+                ScriptsParser.ParsedHook[] hooks = null;
                 foreach (var proj in Directory.GetFiles(dir)) {
                     Console.WriteLine("Searching projects " + proj);
 
-                    ScriptsParser.ParsedHook[] hooks = null;
-                    string pluginFile = null;
+                    hooks = null;
                     if (proj.EndsWith("proj")) {
-                        
+                        pluginFile = null;
+
 
                         Console.WriteLine("In directory");
                         Console.WriteLine("Operating System: " + System.Environment.OSVersion );
                         string xbuildpath = null;
                         if (System.Environment.OSVersion.ToString().Contains("Windows")) {
-                            xbuildpath = Environment.ExpandEnvironmentVariables("%ProgramW6432%") + "\\Mono\\lib\\mono\\xbuild\\14.0\\bin\\xbuild.exe";
-
+                            xbuildpath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86) + "\\Microsoft Visual Studio\\2017\\Community\\MSBuild\\15.0\\Bin\\msbuild.exe";
+                            //Broke: Protocol Specific, changes name of game dir because linux :/
+                            var projtext = File.ReadAllText(proj);
+                            File.WriteAllText(proj, projtext.Replace("bpgameserver_Data","BrokeProtocol_Data"));
+                         
                         }
                         else {
                             xbuildpath = "msbuild";
@@ -90,24 +95,44 @@ namespace HooksInjector
                         Console.WriteLine("MSBuild Output: \n");
                         Console.WriteLine(output);
                         Console.WriteLine("Finished Build");
-                        pluginFile = proj.Replace("csproj", "dll");
+                        foreach (var plugin in Directory.GetFiles(dir + "/bin/Release")) {
+                            if (File.Exists(pluginsDir + "/" + Path.GetFileName(plugin))) {
+                                File.Delete(pluginsDir + "/" + Path.GetFileName(plugin));
+                            }
+                            if (plugin.EndsWith("dll") && !plugin.Contains("UnityEngine") && !plugin.Contains("Assembly-CSharp") && !plugin.Contains("HookAttribute")) File.Copy(plugin, pluginsDir+"/" + Path.GetFileName(plugin));
+                        }
                     }
-                    else if (proj.EndsWith("cs")) {
-                            hooks = parser.GetHooks(proj);
+
+                }
+
+                foreach (var plugin in Directory.GetFiles(pluginsDir)) {
+                    if (plugin.EndsWith("dll")) {
+                        pluginFile = plugin;
+                        Console.WriteLine("CURRENT DLL: " + plugin);
                         
-                    }
-                    if (hooks != null && pluginFile != null)
-                    {
-                        var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
-                        foreach (var hook in hooks) {
-                            injector.InjectHook(hook);
+                        foreach (var script in Directory.GetFiles(dir)) {
+                            if (script.EndsWith("cs"))
+                            {
+                                Console.WriteLine("CURRENT SCRIPT " + script);
+                                hooks = parser.GetHooks(script);
+                                Console.WriteLine("hooks = parser.GerHooks("+script+")");
+                                Console.WriteLine("Hooks: "+hooks.Length);
+                                    var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
+                                    foreach (var finalhook in hooks) {
+                                        injector.InjectHook(finalhook);
+                                    
+                                }
+                
+                                
+                            }
+                    
                         }
                     }
                 }
-                
+
                 
             }
-            
+            /*
                 foreach (var scriptfile in Directory.GetFiles(scriptsDir)) {
                 var hooks = parser.GetHooks(scriptfile);
                 var pluginFile = compiler.CompileScript(scriptfile);
@@ -124,6 +149,7 @@ namespace HooksInjector
                     injector.InjectHook(hook);
                 }
             }
+            */
             
             gameAssembly.Write(assemblyPath);
             Console.WriteLine("HooksInjector: Hooks inserted sucessfully!");
