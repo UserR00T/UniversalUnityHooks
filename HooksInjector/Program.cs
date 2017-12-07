@@ -4,10 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using CommandLine;
-using Microsoft.Build.Framework;
 namespace HooksInjector
 {
     class Options
@@ -95,11 +92,19 @@ namespace HooksInjector
                         Console.WriteLine("MSBuild Output: \n");
                         Console.WriteLine(output);
                         Console.WriteLine("Finished Build");
-                        foreach (var plugin in Directory.GetFiles(dir + "/bin/Release")) {
+                        Console.WriteLine("Entering FOR");
+                        Console.WriteLine(dir);
+                        Console.WriteLine(Directory.GetParent( dir + "/bin/Release"));
+                        foreach (var plugin in Directory.GetFiles(dir + "/bin/Release/")) {
+                            Console.WriteLine(dir + "/bin/Release/"  + Path.GetFileName(plugin));
+
                             if (File.Exists(pluginsDir + "/" + Path.GetFileName(plugin))) {
                                 File.Delete(pluginsDir + "/" + Path.GetFileName(plugin));
                             }
-                            if (plugin.EndsWith("dll") && !plugin.Contains("UnityEngine") && !plugin.Contains("Assembly-CSharp") && !plugin.Contains("HookAttribute")) File.Copy(plugin, pluginsDir+"/" + Path.GetFileName(plugin));
+                            if (plugin.EndsWith("dll") && !plugin.Contains("UnityEngine") &&
+                                !plugin.Contains("Assembly-CSharp") && !plugin.Contains("HookAttribute")) {
+                                File.Copy(dir + "/bin/Release/"  + Path.GetFileName(plugin), pluginsDir + "/" + Path.GetFileName(plugin));
+                            }
                         }
                     }
 
@@ -119,7 +124,7 @@ namespace HooksInjector
                                 Console.WriteLine("Hooks: "+hooks.Length);
                                     var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
                                     foreach (var finalhook in hooks) {
-                                        injector.InjectHook(finalhook);
+                                        injector.InjectHook(finalhook,  Path.GetFileName(script));
                                     
                                 }
                 
