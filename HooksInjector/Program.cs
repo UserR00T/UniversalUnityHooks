@@ -120,7 +120,7 @@ namespace HooksInjector
                             {
                                 Console.WriteLine("CURRENT SCRIPT " + script);
                                 hooks = parser.GetHooks(script);
-                                Console.WriteLine("hooks = parser.GerHooks("+script+")");
+                                Console.WriteLine("hooks = parser.GetHooks("+script+")");
                                 Console.WriteLine("Hooks: "+hooks.Length);
                                     var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
                                     foreach (var finalhook in hooks) {
