@@ -61,7 +61,6 @@ namespace HooksInjector
                         pluginFile = null;
 
 
-                        Console.WriteLine("In directory");
                         Console.WriteLine("Operating System: " + System.Environment.OSVersion );
                         string xbuildpath = null;
                         if (System.Environment.OSVersion.ToString().Contains("Windows")) {
@@ -74,7 +73,6 @@ namespace HooksInjector
                         else {
                             xbuildpath = "msbuild";
                         }
-                        Console.WriteLine("MSBuild Path: "+ xbuildpath);
 
                         var p = new Process {
                             StartInfo = {
@@ -92,11 +90,8 @@ namespace HooksInjector
                         Console.WriteLine("MSBuild Output: \n");
                         Console.WriteLine(output);
                         Console.WriteLine("Finished Build");
-                        Console.WriteLine("Entering FOR");
                         Console.WriteLine(dir);
-                        Console.WriteLine(Directory.GetParent( dir + "/bin/Release"));
                         foreach (var plugin in Directory.GetFiles(dir + "/bin/Release/")) {
-                            Console.WriteLine(dir + "/bin/Release/"  + Path.GetFileName(plugin));
 
                             if (File.Exists(pluginsDir + "/" + Path.GetFileName(plugin))) {
                                 File.Delete(pluginsDir + "/" + Path.GetFileName(plugin));
@@ -112,16 +107,11 @@ namespace HooksInjector
 
                 foreach (var plugin in Directory.GetFiles(pluginsDir)) {
                     if (plugin.EndsWith("dll")) {
-                        pluginFile = plugin;
-                        Console.WriteLine("CURRENT DLL: " + plugin);
-                        
+                        pluginFile = plugin;                        
                         foreach (var script in Directory.GetFiles(dir)) {
                             if (script.EndsWith("cs"))
                             {
-                                Console.WriteLine("CURRENT SCRIPT " + script);
                                 hooks = parser.GetHooks(script);
-                                Console.WriteLine("hooks = parser.GetHooks("+script+")");
-                                Console.WriteLine("Hooks: "+hooks.Length);
                                     var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
                                     foreach (var finalhook in hooks) {
                                         injector.InjectHook(finalhook,  Path.GetFileName(script));
