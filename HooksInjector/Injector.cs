@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using Mono.Cecil.Rocks;
 
 namespace HooksInjector
 {
@@ -19,7 +21,7 @@ namespace HooksInjector
             pluginAssembly = _pluginAssembly;
 
         }
-        public void InjectHook(ScriptsParser.ParsedHook hook) {
+        public void InjectHook(ScriptsParser.ParsedHook hook, string script) {
             var nameSplit = hook.fullName.Split('.');
             var className = nameSplit[0];
             var methodName = nameSplit[1];
@@ -41,9 +43,10 @@ namespace HooksInjector
             }
             TypeDefinition classType = null;
             foreach (var type in pluginAssembly.MainModule.GetTypes()) {
-                if (type.Name.EndsWith("Plugin", StringComparison.CurrentCulture)) {
+                if (type.Name.Contains(script.Split('.')[0])) {
                     classType = type;
                 }
+
             }
             if (classType == null) {
                 Console.WriteLine("HooksInjector: ERROR: No class ending with \"Plugin\" found in " + pluginPath);
@@ -52,12 +55,13 @@ namespace HooksInjector
             }
             var rawmethodName = hook.fullName.Split('.').Last();
             var hookMethod = classType.GetMethod(methodName);
-
+            
             if (hookMethod == null) {
                 Console.WriteLine("HooksInjector: ERROR: Method " + rawmethodName + " Not found in class " + className);
                 Console.ReadLine();
                 return;
             }
+            
             InjectionDefinition injector;
 
             try {
@@ -86,6 +90,8 @@ namespace HooksInjector
                 Console.ReadLine();
                 return;
             }
+            
+
         }
     }
 }

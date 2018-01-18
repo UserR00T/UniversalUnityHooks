@@ -9,3 +9,9 @@ R:/C#/UnityHooks/HookAttribute/obj/Debug/HookAttribute.pdb
 /home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.csproj.CoreCompileInputs.cache
 /home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.dll
 /home/dbk/Documents/UnityHooks/HookAttribute/obj/Debug/HookAttribute.pdb
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HookAttribute.dll
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HookAttribute.pdb
+/home/lewis/Documents/Git/UniversalUnityHooks/HookAttribute/obj/Debug/HookAttribute.csprojResolveAssemblyReference.cache
+/home/lewis/Documents/Git/UniversalUnityHooks/HookAttribute/obj/Debug/HookAttribute.csproj.CoreCompileInputs.cache
+/home/lewis/Documents/Git/UniversalUnityHooks/HookAttribute/obj/Debug/HookAttribute.dll
+/home/lewis/Documents/Git/UniversalUnityHooks/HookAttribute/obj/Debug/HookAttribute.pdb

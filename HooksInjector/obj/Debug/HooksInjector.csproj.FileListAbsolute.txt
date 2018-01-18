@@ -27,3 +27,11 @@ R:/C#/UnityHooks/HooksInjector/bin/Debug/Mono.Cecil.Rocks.dll
 /home/dbk/Documents/UnityHooks/HooksInjector/obj/Debug/HooksInjector.csproj.CoreCompileInputs.cache
 /home/dbk/Documents/UnityHooks/HooksInjector/obj/Debug/HooksInjector.exe
 /home/dbk/Documents/UnityHooks/HooksInjector/obj/Debug/HooksInjector.pdb
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe.config
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.exe
+/home/lewis/Documents/Git/UniversalUnityHooks/Output/HooksInjector.pdb
+/home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Debug/HooksInjector.csprojResolveAssemblyReference.cache
+/home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Debug/HooksInjector.csproj.HooksInjector.exe.config
+/home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Debug/HooksInjector.csproj.CoreCompileInputs.cache
+/home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Debug/HooksInjector.exe
+/home/lewis/Documents/Git/UniversalUnityHooks/HooksInjector/obj/Debug/HooksInjector.pdb
