@@ -23,8 +23,8 @@ namespace HooksInjector
         }
         public void InjectHook(ScriptsParser.ParsedHook hook, string script) {
             var nameSplit = hook.fullName.Split('.');
-            var className = nameSplit[0];
-            var methodName = nameSplit[1];
+            var className = hook.fullName.Substring(0, hook.fullName.Substring(0, hook.fullName.Length - 1).LastIndexOf('.'));
+            var methodName = nameSplit[nameSplit.Length - 1];
 
             var methodClassType = gameAssembly.MainModule.GetType(className);
             if (methodClassType == null) {
@@ -55,13 +55,13 @@ namespace HooksInjector
             }
             var rawmethodName = hook.fullName.Split('.').Last();
             var hookMethod = classType.GetMethod(methodName);
-            
+
             if (hookMethod == null) {
                 Console.WriteLine("HooksInjector: ERROR: Method " + rawmethodName + " Not found in class " + className);
                 Console.ReadLine();
                 return;
             }
-            
+
             InjectionDefinition injector;
 
             try {
@@ -90,7 +90,7 @@ namespace HooksInjector
                 Console.ReadLine();
                 return;
             }
-            
+
 
         }
     }
