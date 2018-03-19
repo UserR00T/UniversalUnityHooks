@@ -48,11 +48,18 @@ namespace HooksInjector
                 }
 
             }
-            if (classType == null) {
+            
+             if (classType == null) {
                 Console.WriteLine("HooksInjector: ERROR: No class ending with \"Plugin\" found in " + pluginPath);
                 Console.Read();
                 return;
             }
+
+            if (classType.IsNotPublic) {
+                classType.IsPublic = true;
+            }
+            
+        
             var rawmethodName = hook.fullName.Split('.').Last();
             var hookMethod = classType.GetMethod(methodName);
 
