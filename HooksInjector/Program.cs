@@ -47,7 +47,9 @@ namespace HooksInjector
 
             }
             const string origAssembly = "Assembly-CSharp.dll";
-            var gameAssembly = AssemblyDefinition.ReadAssembly(origAssembly);
+            var resolver = new DefaultAssemblyResolver();
+            resolver.AddSearchDirectory(managedFolder);
+            var gameAssembly = AssemblyDefinition.ReadAssembly(origAssembly, new ReaderParameters { AssemblyResolver = resolver });
 
             foreach (var dir in Directory.GetDirectories(scriptsDir)) {
                 Console.WriteLine("Searching Dirs " + dir);
@@ -68,7 +70,7 @@ namespace HooksInjector
                             //Broke: Protocol Specific, changes name of game dir because linux :/
                             var projtext = File.ReadAllText(proj);
                             File.WriteAllText(proj, projtext.Replace("bpgameserver_Data","BrokeProtocol_Data"));
-                         
+
                         }
                         else {
                             xbuildpath = "msbuild";
@@ -76,7 +78,7 @@ namespace HooksInjector
 
                         var p = new Process {
                             StartInfo = {
-                                
+
                                 FileName = xbuildpath,
                                 Arguments = $"/p:Configuration=Release {proj}",
                                 UseShellExecute = false,
@@ -105,27 +107,31 @@ namespace HooksInjector
 
                 }
 
-                foreach (var plugin in Directory.GetFiles(pluginsDir)) {
-                    if (plugin.EndsWith("dll")) {
-                        pluginFile = plugin;                        
-                        foreach (var script in Directory.GetFiles(dir)) {
+                foreach (var plugin in Directory.GetFiles(pluginsDir))
+                {
+                    if (plugin.EndsWith("dll"))
+                    {
+                        pluginFile = plugin;
+                        foreach (var script in Directory.GetFiles(dir))
+                        {
                             if (script.EndsWith("cs"))
                             {
                                 hooks = parser.GetHooks(script);
-                                    var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile), pluginFile);
-                                    foreach (var finalhook in hooks) {
-                                        injector.InjectHook(finalhook,  Path.GetFileName(script));
-                                    
+                                var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile, new ReaderParameters { AssemblyResolver = resolver }), pluginFile);
+                                foreach (var finalhook in hooks)
+                                {
+                                    injector.InjectHook(finalhook, Path.GetFileName(script));
+
                                 }
-                
-                                
+
+
                             }
-                    
+
                         }
                     }
                 }
 
-                
+
             }
             /*
                 foreach (var scriptfile in Directory.GetFiles(scriptsDir)) {
@@ -145,7 +151,7 @@ namespace HooksInjector
                 }
             }
             */
-            
+
             gameAssembly.Write(assemblyPath);
             Console.WriteLine("HooksInjector: Hooks inserted sucessfully!");
 
