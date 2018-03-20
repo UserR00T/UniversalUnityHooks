@@ -8,3 +8,13 @@ public class HookAttribute : Attribute
         _fullName = fullName;
     }
 }
+public class ChangeAccessModifierAttribute : Attribute
+{
+    private string _ToAccessModifier;
+    private string _Field;
+    public ChangeAccessModifierAttribute(string ToAccessModifier, string Field)
+    {
+        _ToAccessModifier = ToAccessModifier;
+        _Field = Field;
+    }
+}

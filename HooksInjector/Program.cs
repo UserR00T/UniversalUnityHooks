@@ -55,6 +55,7 @@ namespace HooksInjector
                 Console.WriteLine("Searching Dirs " + dir);
                 string pluginFile= null;
                 ScriptsParser.ParsedHook[] hooks = null;
+                ScriptsParser.ParsedAccessModifier[] ChangedAccessModifiers = null;
                 foreach (var proj in Directory.GetFiles(dir)) {
                     Console.WriteLine("Searching projects " + proj);
 
@@ -116,6 +117,13 @@ namespace HooksInjector
                         {
                             if (script.EndsWith("cs"))
                             {
+                                ChangedAccessModifiers = parser.GetAccessModifiers(script);
+                                foreach (ScriptsParser.ParsedAccessModifier _CurrentChangedAccessModifier in ChangedAccessModifiers)
+                                {
+                                    TypeDefinition TypeDef = gameAssembly.MainModule.GetType(_CurrentChangedAccessModifier.AccessModifierField);
+                                    TypeDef.IsPublic = true;
+                                    gameAssembly.MainModule.Write("Assembly-CSharp.dll");
+                                }
                                 hooks = parser.GetHooks(script);
                                 var injector = new Injector(gameAssembly, AssemblyDefinition.ReadAssembly(pluginFile, new ReaderParameters { AssemblyResolver = resolver }), pluginFile);
                                 foreach (var finalhook in hooks)
