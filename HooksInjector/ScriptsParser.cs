@@ -11,12 +11,12 @@ namespace HooksInjector
 {
     public class ScriptsParser
     {
-        const string hookName = "Hook";
+        private const string HookName = "Hook";
         public struct ParsedHook
         {
-            public string fullName;
-            public bool canBlock;
-            public bool hookEnd;
+            public string FullName;
+            public bool CanBlock;
+            public bool HookEnd;
         }
         public struct ParsedAccessModifier
         {
@@ -34,25 +34,28 @@ namespace HooksInjector
             string[] scriptLines = File.ReadAllLines(scriptFile);
 
             List<ParsedHook> hooks = new List<ParsedHook>();
-            for (int i = 0; i < scriptLines.Length; i++) {
+            for (var i = 0; i < scriptLines.Length; i++) {
                 string line = scriptLines[i];
-                if (line.Contains(hookName)) {
+                if (line.Contains(HookName)) {
+                    
                     string methodName = Regex.Match(line, "\"([^\"]*)\"").Groups[1].Value;
+                    
+
                     if (methodName.Length < 1) {
                         Console.WriteLine("HooksInjector: ERROR: " + scriptFile + " Contains incomplete hook on line: " + i);
                         Console.Read();
                         return null;
                     }
 
-                    bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ") <= -1;
+                    bool methodCanBlock = scriptLines[i + 1].IndexOf(" void ", StringComparison.Ordinal) <= -1;
 
                     Console.WriteLine(methodName + " Can Block: " + methodCanBlock);
 
                     bool hookEnd = false || line.Contains("true");
                     hooks.Add(new ParsedHook {
-                        fullName = methodName,
-                        canBlock = methodCanBlock,
-                        hookEnd = hookEnd
+                        FullName = methodName,
+                        CanBlock = methodCanBlock,
+                        HookEnd = hookEnd
 
                     });
                 }
@@ -61,7 +64,7 @@ namespace HooksInjector
             return hooks.ToArray();
 
         }
-        public ParsedAccessModifier[] GetAccessModifiers(string scriptFile)
+        public static ParsedAccessModifier[] GetAccessModifiers(string scriptFile)
         {
             if (!File.Exists(scriptFile))
             {
@@ -72,30 +75,30 @@ namespace HooksInjector
 
             string[] scriptLines = File.ReadAllLines(scriptFile);
 
-            List<ParsedAccessModifier> ChangedAccessModifiers = new List<ParsedAccessModifier>();
-            for (int i = 0; i < scriptLines.Length; i++)
+            List<ParsedAccessModifier> changedAccessModifiers = new List<ParsedAccessModifier>();
+            for (var i = 0; i < scriptLines.Length; i++)
             {
                 string line = scriptLines[i];
-                if (line.Contains(hookName))
+                if (line.Contains(HookName))
                 {
-                    string ToAccessModifier = Regex.Match(line, "\"([^\"]*)\"").Groups[1].Value;
-                    string AccessModifierField = Regex.Match(line, "\"([^\"]*)\"").Groups[2].Value;
-                    if (AccessModifierField.Length < 1 || ToAccessModifier.Length < 1)
+                    string toAccessModifier = Regex.Match(line, "\"([^\"]*)\"").Groups[1].Value;
+                    string accessModifierField = Regex.Match(line, "\"([^\"]*)\"").Groups[2].Value;
+                    if (accessModifierField.Length < 1 || toAccessModifier.Length < 1)
                     {
                         Console.WriteLine("HooksInjector: ERROR: " + scriptFile + " Contains incomplete Access Modifier or field on line: " + i);
                         Console.Read();
                         return null;
                     }
-                    Console.WriteLine($"Changed {ToAccessModifier} to {AccessModifierField}");
-                    ChangedAccessModifiers.Add(new ParsedAccessModifier
+                    Console.WriteLine($"Changed {toAccessModifier} to {accessModifierField}");
+                    changedAccessModifiers.Add(new ParsedAccessModifier
                     {
-                        ToAccessModifier = ToAccessModifier,
-                        AccessModifierField = AccessModifierField
+                        ToAccessModifier = toAccessModifier,
+                        AccessModifierField = accessModifierField
                     });
                 }
             }
 
-            return ChangedAccessModifiers.ToArray();
+            return changedAccessModifiers.ToArray();
 
         }
     }

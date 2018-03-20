@@ -44,3 +44,11 @@ C:\Users\Enver\Documents\UUH-Fork\UniversalUnityHooks\HooksInjector\obj\Debug\Ho
 C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\Output\HooksInjector.exe.config
 C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.exe
 C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.pdb
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\Output\HooksInjector.exe.config
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\Output\HooksInjector.exe
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\Output\HooksInjector.pdb
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.csprojResolveAssemblyReference.cache
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.csproj.CoreCompileInputs.cache
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.csproj.CopyComplete
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.exe
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.pdb

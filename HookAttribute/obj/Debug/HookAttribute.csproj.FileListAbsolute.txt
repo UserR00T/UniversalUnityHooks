@@ -20,3 +20,10 @@ C:\Users\Enver\Documents\UUH-Fork\UniversalUnityHooks\Output\HookAttribute.pdb
 C:\Users\Enver\Documents\UUH-Fork\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.csprojResolveAssemblyReference.cache
 C:\Users\Enver\Documents\UUH-Fork\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.dll
 C:\Users\Enver\Documents\UUH-Fork\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.pdb
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\Output\HookAttribute.dll
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\Output\HookAttribute.pdb
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.csprojResolveAssemblyReference.cache
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.csproj.CoreCompileInputs.cache
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.csproj.CopyComplete
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.dll
+C:\Users\DBK\Documents\Git\UniversalUnityHooks\HookAttribute\obj\Debug\HookAttribute.pdb
