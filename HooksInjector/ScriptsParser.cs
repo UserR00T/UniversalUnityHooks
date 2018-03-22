@@ -71,15 +71,16 @@ namespace HooksInjector
                 string line = scriptLines[i];
                 if (line.Contains(CamAttributeName))
                 {
-                    string toAccessModifier = Regex.Match(line, "\"([^\"]*)\"").Groups[1].Value;
-                    string accessModifierField = Regex.Match(line, "\"([^\"]*)\"").Groups[2].Value;
+                    MatchCollection matches = Regex.Matches(line, "\"([^\"]*)\"");
+                    string toAccessModifier = matches[0].Value;
+                    string accessModifierField = matches[1].Value;
                     if (accessModifierField.Length < 1 || toAccessModifier.Length < 1)
                     {
                         Console.WriteLine("HooksInjector: ERROR: " + scriptFile + " Contains incomplete Access Modifier or field on line: " + i);
                         Console.Read();
                         return null;
                     }
-                    Console.WriteLine($"Changed {toAccessModifier} to {accessModifierField}");
+                    Console.WriteLine($"Changed the access modifier of field '{toAccessModifier}' to {accessModifierField}");
                     changedAccessModifiers.Add(new ParsedAccessModifier
                     {
                         ToAccessModifier = toAccessModifier,

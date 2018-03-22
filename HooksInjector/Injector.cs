@@ -48,7 +48,7 @@ namespace HooksInjector
                 }
 
             }
-            
+
              if (classType == null) {
                 Console.WriteLine("HooksInjector: ERROR: No class ending with \"Plugin\" found in " + _pluginPath);
                 Console.Read();
@@ -58,8 +58,8 @@ namespace HooksInjector
             if (classType.IsNotPublic) {
                 classType.IsPublic = true;
             }
-            
-        
+
+
             string rawmethodName = hook.FullName.Split('.').Last();
             MethodDefinition hookMethod = classType.GetMethod(methodName);
 
@@ -71,12 +71,7 @@ namespace HooksInjector
 
             try {
                 InjectionDefinition injector;
-                if (hook.CanBlock) {
-                    injector = method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn);
-                }
-                else {
-                    injector = method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance);
-                }
+                injector = hook.CanBlock ? method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn) : method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance);
 
                 if (hook.HookEnd) {
                     injector.Inject(-1, null, InjectDirection.Before);

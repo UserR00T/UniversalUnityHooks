@@ -52,3 +52,6 @@ C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInje
 C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.csproj.CopyComplete
 C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.exe
 C:\Users\DBK\Documents\Git\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.pdb
+C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\Output\HooksInjector.exe
+C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\Output\HooksInjector.pdb
+C:\Users\Enver\Documents\UUH-Fork\DBK-Repo\UniversalUnityHooks\HooksInjector\obj\Debug\HooksInjector.csprojResolveAssemblyReference.cache
