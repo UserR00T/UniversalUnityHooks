@@ -12,28 +12,28 @@ namespace HooksInjector
 {
     class Injector
     {
-        string pluginPath;
-        AssemblyDefinition gameAssembly;
-        AssemblyDefinition pluginAssembly;
-        public Injector(AssemblyDefinition _gameAssembly, AssemblyDefinition _pluginAssembly, string _pluginPath) {
-            pluginPath = _pluginPath;
-            gameAssembly = _gameAssembly;
-            pluginAssembly = _pluginAssembly;
+        string _pluginPath;
+        AssemblyDefinition _gameAssembly;
+        AssemblyDefinition _pluginAssembly;
+        public Injector(AssemblyDefinition gameAssembly, AssemblyDefinition pluginAssembly, string pluginPath) {
+            this._pluginPath = pluginPath;
+            this._gameAssembly = gameAssembly;
+            this._pluginAssembly = pluginAssembly;
 
         }
         public void InjectHook(ScriptsParser.ParsedHook hook, string script) {
-            var nameSplit = hook.fullName.Split('.');
-            var className = hook.fullName.Substring(0, hook.fullName.Substring(0, hook.fullName.Length - 1).LastIndexOf('.'));
-            var methodName = nameSplit[nameSplit.Length - 1];
+            string[] nameSplit = hook.FullName.Split('.');
+            string className = hook.FullName.Substring(0, hook.FullName.Substring(0, hook.FullName.Length - 1).LastIndexOf('.'));
+            string methodName = nameSplit[nameSplit.Length - 1];
 
-            var methodClassType = gameAssembly.MainModule.GetType(className);
+            TypeDefinition methodClassType = _gameAssembly.MainModule.GetType(className);
             if (methodClassType == null) {
                 Console.WriteLine("HooksInjector: ERROR: Class " + className + " Was not found in game assembly. Please check the spelling of the class.");
                 Console.ReadLine();
                 return;
             }
 
-            var method = methodClassType.GetMethod(methodName);
+            MethodDefinition method = methodClassType.GetMethod(methodName);
 
             if (method == null) {
                 Console.WriteLine("HooksInjector: ERROR: Method " + methodName + " could not be found in class: " + className + ". Please check the spelling of the method.");
@@ -42,19 +42,26 @@ namespace HooksInjector
 
             }
             TypeDefinition classType = null;
-            foreach (var type in pluginAssembly.MainModule.GetTypes()) {
+            foreach (TypeDefinition type in _pluginAssembly.MainModule.GetTypes()) {
                 if (type.Name.Contains(script.Split('.')[0])) {
                     classType = type;
                 }
 
             }
-            if (classType == null) {
-                Console.WriteLine("HooksInjector: ERROR: No class ending with \"Plugin\" found in " + pluginPath);
+
+             if (classType == null) {
+                Console.WriteLine("HooksInjector: ERROR: No class ending with \"Plugin\" found in " + _pluginPath);
                 Console.Read();
                 return;
             }
-            var rawmethodName = hook.fullName.Split('.').Last();
-            var hookMethod = classType.GetMethod(methodName);
+
+            if (classType.IsNotPublic) {
+                classType.IsPublic = true;
+            }
+
+
+            string rawmethodName = hook.FullName.Split('.').Last();
+            MethodDefinition hookMethod = classType.GetMethod(methodName);
 
             if (hookMethod == null) {
                 Console.WriteLine("HooksInjector: ERROR: Method " + rawmethodName + " Not found in class " + className);
@@ -62,23 +69,11 @@ namespace HooksInjector
                 return;
             }
 
-            InjectionDefinition injector;
-
             try {
-                if (hook.canBlock) {
-                    if (method.Parameters.Count > 0)
-                        injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn);
-                    else
-                        injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn);
-                }
-                else {
-                    if (method.Parameters.Count > 0)
-                        injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef);
-                    else
-                        injector = new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance);
-                }
+                InjectionDefinition injector;
+                injector = hook.CanBlock ? method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn) : method.Parameters.Count > 0 ? new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef) : new InjectionDefinition(method, hookMethod, InjectFlags.PassInvokingInstance);
 
-                if (hook.hookEnd) {
+                if (hook.HookEnd) {
                     injector.Inject(-1, null, InjectDirection.Before);
                 }
                 else
@@ -88,7 +83,6 @@ namespace HooksInjector
             catch (Exception e) {
                 Console.WriteLine("HooksInjector: ERROR: " + e.ToString() + " Hook definition is probably wrong.");
                 Console.ReadLine();
-                return;
             }
 
 
