@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/DeathByKorea/UniversalUnityHooks.svg?branch=master)](https://travis-ci.org/DeathByKorea/UniversalUnityHooks)
+[![Build Status](https://travis-ci.org/UserR00T/UniversalUnityHooks.svg?branch=master)](https://travis-ci.org/UserR00T/UniversalUnityHooks)
 
 ## Synopsis
 
@@ -7,59 +7,71 @@ UniversalUnityHooks aims to bring a adaptable modding API to any unity game. Thi
 ## Code Example
 
 ```cs
-public class printStartPlugin
+public class YourClass
 {
-	[Hook("SvNetMan.StartServerNetwork")]
-	public static void startServerNetwork(SvNetMan man)
+	[Hook("SvManager.StartServer")]
+	public static void StartServer(SvManager man)
 	{
 		Debug.Log("Plugin Loaded!");
 	}
-
 }
 ```
 
-In this example the game hooks the examples ServerStartNetwork method in the SvNetMan Class, and prints Plugin Loaded when the server connects to the network
+In this example the game hooks the examples ``StartServer`` method in the ``SvManager`` Class, and prints Plugin Loaded when the server starts.
 ## Motivation
 
-The inital motivation behind the project was to provide a way for server owners to develop plugins for the game Broke Protocol (https://brokeprotocol.com). But due to the way unity games are made, this program can be ported to any other game relatively easily
+The inital motivation behind the project was to provide a way for server owners to develop plugins for the game Broke Protocol (https://brokeprotocol.com). But due to the way unity games are made, this program can be used on other games very easily.
 
 ## Installation
-
-Assuming Linux (x64)
-
-For windows:
-
-* Build the files from Visual Studio or under Bash For Windows
-
-Prerequites:
-* mono-complete
-* mono.cecil.inject (https://github.com/denikson/Mono.Cecil.Inject/releases)
-
-To build the files from source and install them simply:
-* If you need to add the references to Mono, they're in the Mono folder.
-* Build HookAttribute with `xbuild HookAttribute.csproj` and place the HookAttribute.dll in $Gamedir/Game_Data/Managed
-* Build Hooks Injector with `xbuild HooksInjector.csproj` and place HooksInjector.exe along with the `Mono.Cecil` & `CommandLine` dll's in $Gamedir
-
-To run the program do `mono HooksInjector.exe`(linux) or just run the (windows)
-
-Write your scripts and place them in the plugins directory of $Gamedir (Created after running HooksInjector)
+Goto [Releases](https://github.com/UserR00T/UniversalUnityHooks/releases).
+Download the latest version.
+Reference the .dll into your class library project. Make sure that the class that contains all the hooks is public as well as the hook methods themselfs.
+Put your compiled DLLs in your ``root/Plugins`` folder. You may need to run ``UniversalUnityHooks.exe`` first to create that folder.
+(Optional) I suggest adding this command to ``Post build event``: ``copy /Y "$(TargetFileName)" "..\..\..\..\Plugins\"``, assuming you keep your solution in ``root/Scripts``.
 
 ## API Reference
 
 The program is fairly straight forward, to hook a method, simply put 
 `[Hook("Class.Method")]` 
-Then supply the instance as the first variable, and the rest of the variables as refs.
-So if I were to want to modify Damage of the SvPlayer Class with variables DamageIndex, Amount, Attacker, and Collider, That would become
+Then supply the instance as the first variable, and the rest of the variables as ``refs``.
+So if I were to want to modify the ``Damage`` methid inside of the ``SvPlayer`` class with variables ``DamageIndex``, ``Amount``, ``Attacker`` and ``Collider``, that would become
 ```cs
+public class YourClass
+{
     [Hook("SvPlayer.Damage")]
     public static bool Damage(SvPlayer player, ref DamageIndex type, ref float amount, ref ShPlayer attacker, ref Collider collider)
+    {
+      if (/*Your check for whatever here*/)
+        return true; // Blocks the rest of the method
+      else if (/*other check here*/)
+        amount *= 2 // Multiply number by two.
+      return false; // Allows the rest of the method to continue
+    }
+}
+```
+It'd compile it like this:
+```cs
+  // Token: 0x06000425 RID: 1061 RVA: 0x00018A38 File Offset: 0x00016C38
+	public override void Damage(global::DamageIndex type, float amount, global::ShPlayer attacker, Collider collider)
+	{
+		if (YourClass.Damage(this, ref type, ref amount, ref attacker, ref collider))
+		{
+			return;
+		}
+    // Rest of damage method's code.
+  }
 ```
 
 ## License
 
-This code is licenced under the MIT Licence, Information can be found by clicking on it at the top of the repository.
+This code is licenced under the MIT Licence, [Information can be found here.](https://github.com/UserR00T/UniversalUnityHooks/blob/master/LICENSE)
 
+## Limitations
+Unfortunately there are some limitations;
+- You can only inject your code at the start or end of the method. Nowhere in between. (To inject at the end, type ``[Hook("Class.Method", true)]``
+- Injecting in a method of type IEnumerator does not work properly. 
 
 ## Credits
 
 Ardivaba: https://github.com/Ardivaba
+DeathByKorea: https://github.com/DeathByKorea
