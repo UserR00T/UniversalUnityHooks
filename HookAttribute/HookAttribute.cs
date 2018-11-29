@@ -1,19 +1,22 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    public class HookAttribute : Attribute
+namespace UniversalUnityHooks
+{
+    [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
+    public sealed class HookAttribute : Attribute
     {
-        private string _fullName;
-        public HookAttribute(string fullName, bool end = false) {
-            _fullName = fullName;
-        }
-    }
-    public class ChangeAccessModifierAttribute : Attribute
-    {
-        private string _toAccessModifier;
-        private string _field;
-        public ChangeAccessModifierAttribute(string toAccessModifier, string field)
+        readonly bool addToEnd;
+        readonly string fullName;
+        public HookAttribute(string fullName, bool addToEnd = false)
         {
-            _toAccessModifier = toAccessModifier;
-            _field = field;
+            this.fullName = fullName;
+            this.addToEnd = addToEnd;
         }
+        public string GetName() => fullName;
+        public bool PlaceAtEnd() => addToEnd;
     }
+}
