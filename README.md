@@ -24,17 +24,21 @@ The inital motivation behind the project was to provide a way for server owners 
 
 ## Installation
 Goto [Releases](https://github.com/UserR00T/UniversalUnityHooks/releases).
+
 Download the latest version.
+
 Reference the .dll into your class library project. Make sure that the class that contains all the hooks is public as well as the hook methods themselfs.
+
 Put your compiled DLLs in your ``root/Plugins`` folder. You may need to run ``UniversalUnityHooks.exe`` first to create that folder.
+
 (Optional) I suggest adding this command to ``Post build event``: ``copy /Y "$(TargetFileName)" "..\..\..\..\Plugins\"``, assuming you keep your solution in ``root/Scripts``.
 
 ## API Reference
 
-The program is fairly straight forward, to hook a method, simply put 
-`[Hook("Class.Method")]` 
+The program is fairly straight forward, to hook a method, simply put `[Hook("Class.Method")]` 
+
 Then supply the instance as the first variable, and the rest of the variables as ``refs``.
-So if I were to want to modify the ``Damage`` methid inside of the ``SvPlayer`` class with variables ``DamageIndex``, ``Amount``, ``Attacker`` and ``Collider``, that would become
+So if I were to want to modify the ``Damage`` method inside of the ``SvPlayer`` class with variables ``DamageIndex``, ``Amount``, ``Attacker`` and ``Collider``, that would become
 ```cs
 public class YourClass
 {
@@ -74,4 +78,5 @@ Unfortunately there are some limitations;
 ## Credits
 
 Ardivaba: https://github.com/Ardivaba
+
 DeathByKorea: https://github.com/DeathByKorea
