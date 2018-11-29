@@ -47,7 +47,7 @@ public class YourClass
     {
       if (/*Your check for whatever here*/)
         return true; // Blocks the rest of the method
-      else if (/*other check here*/)
+      if (/*other check here*/)
         amount *= 2 // Multiply number by two.
       return false; // Allows the rest of the method to continue
     }
