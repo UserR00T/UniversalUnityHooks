@@ -87,7 +87,7 @@
     <Compile Include="Assemblies.cs" />
     <Compile Include="Attributes.cs" />
     <Compile Include="Attributes\AddMethodAttribute.cs" />
-    <Compile Include="Attributes\IAttribute.cs" />
+    <Compile Include="Attributes\Attribute.cs" />
     <Compile Include="Cecil.cs" />
     <Compile Include="Attributes\HookAttributes.cs" />
     <Compile Include="Program.cs" />

@@ -40,7 +40,7 @@ namespace UniversalUnityHooks
             }
         }
 		public static bool MethodExists(TypeDefinition type, string methodName) => type.Methods.Any(x => x.Name == methodName || x.FullName == methodName);
-		public static bool InjectNewMethod(TypeDefinition type, AssemblyDefinition assembly, string methodName, AttributesHelper.ReturnData<CustomAttribute> hook)
+		public static bool InjectNewMethod(TypeDefinition type, AssemblyDefinition assembly, string methodName, AttributesHelper.AttributeData hook)
 		{
 			try
 			{
@@ -93,7 +93,7 @@ namespace UniversalUnityHooks
             }
             return new ReturnData(typeDefinition, methodDefinition);
         }
-        internal static bool Inject(ReturnData data, AttributesHelper.ReturnData<CustomAttribute> hook)
+        internal static bool Inject(ReturnData data, AttributesHelper.AttributeData hook)
 		{
             try
             {

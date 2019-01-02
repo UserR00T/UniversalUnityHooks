@@ -8,16 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using UniversalUnityHooks.Attributes;
 using static UniversalUnityHooks.Util;
-
+using static UniversalUnityHooks.AttributesHelper;
 namespace UniversalUnityHooks
 {
     class Program
     {
         public static string ver = "2.1.0";
-
-		// Improve
-        public static List<List<AttributesHelper.ReturnData<CustomAttribute>>> HookAttributes { get; set; } = new List<List<AttributesHelper.ReturnData<CustomAttribute>>>();
-		public static List<List<AttributesHelper.ReturnData<CustomAttribute>>> AddMethodAttributes { get; set; } = new List<List<AttributesHelper.ReturnData<CustomAttribute>>>();
+		// Key: Attribute name
+		// Value: Attribute data
+		// Example: Attributes[nameof(HookAttributes)] gets all the attributes found of type HookAttributes from all resources.
+		public static Dictionary<string, List<AttributeData>> Attributes { get; set; } = new Dictionary<string, List<AttributeData>>();
 
 
 		public static string managedFolder;
@@ -46,7 +46,7 @@ namespace UniversalUnityHooks
             Console.WriteLine();
 
 			// Improve
-            var sum = HookAttributes.Sum(x => x.Count) + AddMethodAttributes.Sum(x=>x.Count);
+            var sum = Attributes.Sum(x=>x.Value.Count);
             if (sum == 0)
             {
                 ConsoleHelper.WriteError($"No attributes have been loaded in. Press any key to exit the program.");
@@ -88,35 +88,7 @@ namespace UniversalUnityHooks
             ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Target assembly loaded in.");
 
             Console.WriteLine();
-            var injectedCorrectly = 0;
-            foreach (var resourceAttributes in HookAttributes)
-            {
-                foreach (var hook in resourceAttributes)
-                {
-					// Improve: Add check for multiple args here
-					var returnData = Cecil.ConvertStringToClassAndMethod(hook.Attribute.ConstructorArguments[0].Value.ToString(), assemblyDefinition);
-                    if (returnData == null)
-                        continue;
-                    if (Cecil.Inject(returnData, hook))
-                        ++injectedCorrectly;
-                }
-            }
-			foreach (var resourceAttributes in AddMethodAttributes)
-			{
-				foreach (var addMethod in resourceAttributes)
-				{
-					// Improve: Add check for multiple args here
-					var typeDefinition = Cecil.ConvertStringToClass(addMethod.Attribute.ConstructorArguments[0].Value.ToString(), assemblyDefinition);
-					var methodName = addMethod.Attribute.ConstructorArguments[1].Value.ToString();
-					if (Cecil.MethodExists(typeDefinition, methodName))
-					{
-						ConsoleHelper.WriteError($"Method \"{methodName}\" Already exists in type {typeDefinition.Name}.");
-						continue;
-					}
-					if (Cecil.InjectNewMethod(typeDefinition, assemblyDefinition, methodName, addMethod))
-						++injectedCorrectly;
-				}
-			}
+			var injectedCorrectly = InjectAllHooks(Attributes, assemblyDefinition);
 			Console.WriteLine();
             if (injectedCorrectly == 0)
                 ConsoleHelper.WriteError($"No methods have been injected correctly. Please read above for more information why some injections may have failed.");

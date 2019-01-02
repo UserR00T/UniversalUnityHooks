@@ -9,32 +9,36 @@ using static UniversalUnityHooks.Util;
 
 namespace UniversalUnityHooks.Attributes
 {
-	public class AddMethodAttribute : IAttribute
+	public sealed class AddMethodAttribute : Attribute
 	{
-		public List<ReturnData<CustomAttribute>> AllAttributes { get; set; }
-		public List<ReturnData<CustomAttribute>> Attributes { get; set; }
-		public OperationTimer Timer { get; set; }
-		public AddMethodAttribute(List<ReturnData<CustomAttribute>> attributes, OperationTimer timer)
+		public AddMethodAttribute(List<AttributeData> attributes, OperationTimer timer) : base(attributes, timer) { }
+		public override AddAttributesResponse AddAllFound()
 		{
-			AllAttributes = attributes;
-			Timer = timer;
-		}
-		public AddAttributesResponse AddAllFound()
-		{
-			var addMethodAttributes = AllAttributes.Where(x => x.Attribute.AttributeType.Name == nameof(HookAttribute.AddMethodAttribute)).ToList();
-			if (addMethodAttributes == null || addMethodAttributes.Count == 0)
+			TempData = AllAttributes.Where(x => x.Attribute.AttributeType.Name == nameof(HookAttribute.AddMethodAttribute)).ToList();
+			if (TempData == null || TempData.Count == 0)
 			{
 				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Warning, $"No add method attributes were found. ({Timer.GetElapsedMs}ms)\r\n");
 				return AddAttributesResponse.Info;
 			}
-			if (addMethodAttributes.Any(x => !x.Type.IsPublic))
-			{
-				ConsoleHelper.WriteError($"All types (classes that contain the method for example) must be public. ({Timer.GetElapsedMs}ms)\r\n");
-				return AddAttributesResponse.Error;
-			}
-			Attributes = addMethodAttributes;
-			return AddAttributesResponse.Ok;
+			return base.AddAllFound();
 		}
-		public int Count => Attributes.Count;
+		public static int InjectHooks(Dictionary<string, List<AttributeData>> attributes, AssemblyDefinition assemblyDefinition)
+		{
+			var injectedCorrectly = 0;
+			foreach (var hook in attributes[nameof(AddMethodAttribute)])
+			{
+				// Improve: Add check for multiple args here
+				var typeDefinition = Cecil.ConvertStringToClass(hook.Attribute.ConstructorArguments[0].Value.ToString(), assemblyDefinition);
+				var methodName = hook.Attribute.ConstructorArguments[1].Value.ToString();
+				if (Cecil.MethodExists(typeDefinition, methodName))
+				{
+					ConsoleHelper.WriteError($"Method \"{methodName}\" Already exists in type {typeDefinition.Name}.");
+					continue;
+				}
+				if (Cecil.InjectNewMethod(typeDefinition, assemblyDefinition, methodName, hook))
+					++injectedCorrectly;
+			}
+			return injectedCorrectly;
+		}
 	}
 }

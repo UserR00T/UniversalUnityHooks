@@ -25,22 +25,17 @@ namespace UniversalUnityHooks
                     try
                     {
                         var assembly = AssemblyDefinition.ReadAssembly(Path.GetFullPath(file));
-                        var attributes = AttributesHelper.GetAllAttributes(assembly);
-						// Improve
-						var hookAttributes = new HookAttributes(attributes, timer);
-						if (hookAttributes.AddAllFound() == AttributesHelper.AddAttributesResponse.Error)
-							continue;
-						Program.HookAttributes.Add(hookAttributes.Attributes);
-						var addMethodAttributes = new Attributes.AddMethodAttribute(attributes, timer);
-						if (addMethodAttributes.AddAllFound() == AttributesHelper.AddAttributesResponse.Info)
-							continue;
-						Program.AddMethodAttributes.Add(addMethodAttributes.Attributes);
+                        var allAttributes = AttributesHelper.GetAllAttributesInAssembly(assembly);
+						var filteredAttributes = AttributesHelper.FindAndInvokeAllAttributes(allAttributes, timer);
+						foreach (var keyValuePair in filteredAttributes)
+							Program.Attributes.Add(keyValuePair.Key, keyValuePair.Value);
 						timer.Stop();
-                        ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Loaded in assembly and {hookAttributes.Count + addMethodAttributes.Count} attribute(s) in {timer.GetElapsedMs}ms\r\n");
+                        ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Loaded in assembly and {filteredAttributes.Sum(x=>x.Value.Count)} attribute(s) in {timer.GetElapsedMs}ms\r\n");
                     }
                     catch (Exception ex)
                     {
-                        timer.Stop();
+						ConsoleHelper.WriteError(ex.InnerException.StackTrace);
+						timer.Stop();
                         ConsoleHelper.WriteError($"Could not load in assembly after {timer.GetElapsedMs}ms.");
                         ConsoleHelper.WriteError($"Message: {ex.Message}");
                         ConsoleHelper.WriteError(ex.StackTrace);
