@@ -4,19 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UniversalUnityHooks
+namespace HookAttribute
 {
     [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
     public sealed class HookAttribute : Attribute
     {
-        readonly bool addToEnd;
-        readonly string fullName;
+        bool AddToEnd { get; set; }
+        string FullName { get; set; }
         public HookAttribute(string fullName, bool addToEnd = false)
         {
-            this.fullName = fullName;
-            this.addToEnd = addToEnd;
+            FullName = fullName;
+            AddToEnd = addToEnd;
         }
-        public string GetName() => fullName;
-        public bool PlaceAtEnd() => addToEnd;
+        public string GetName() => FullName;
+        public bool PlaceAtEnd() => AddToEnd;
     }
 }

@@ -53,6 +53,8 @@ namespace UniversalUnityHooks
                 Console.ResetColor();
             }
 
+			public static void WriteError(string message) => WriteMessage(MessageType.Error, message);
+
             public static void WriteMessage(string message) => WriteMessage(MessageType.Info, message);
             public static void WriteMessage(MessageType type, string message)
             {

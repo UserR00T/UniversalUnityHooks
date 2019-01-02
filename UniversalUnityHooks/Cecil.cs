@@ -1,4 +1,5 @@
 ﻿using Mono.Cecil;
+using Mono.Cecil.Cil;
 using Mono.Cecil.Inject;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,9 @@ namespace UniversalUnityHooks
             }
             catch (Exception ex)
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Cannot load in the assembly {assemblyPath} (Cecil).");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Message: {ex.Message}");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, ex.StackTrace);
+                ConsoleHelper.WriteError($"Cannot load in the assembly {assemblyPath} (Cecil).");
+                ConsoleHelper.WriteError($"Message: {ex.Message}");
+                ConsoleHelper.WriteError(ex.StackTrace);
                 return null;
             }
         }
@@ -38,6 +39,41 @@ namespace UniversalUnityHooks
                 this.methodDefinition = methodDefinition;
             }
         }
+		public static bool MethodExists(TypeDefinition type, string methodName) => type.Methods.Any(x => x.Name == methodName || x.FullName == methodName);
+		public static bool InjectNewMethod(TypeDefinition type, AssemblyDefinition assembly, string methodName, AttributesHelper.ReturnData<CustomAttribute> hook)
+		{
+			try
+			{
+				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Injecting new method \"{type.Name}.{methodName}\"..");
+				var methodDefinition = new MethodDefinition(methodName, MethodAttributes.Public, assembly.MainModule.TypeSystem.Void);
+				type.Methods.Add(methodDefinition);
+			var il = methodDefinition.Body.GetILProcessor();
+			methodDefinition.Body.Instructions.Insert(0, il.Create(OpCodes.Ldnull));
+			methodDefinition.Body.Instructions.Insert(1, il.Create(OpCodes.Call, assembly.MainModule.Import(hook.Method)));
+			methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
+			ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Injected new method \"{type.Name}.{methodName}\".");
+				return true;
+			}
+			catch (Exception ex)
+			{
+				ConsoleHelper.WriteError($"Something went wrong while injecting.");
+				ConsoleHelper.WriteError($"Message: {ex.Message}");
+				if (!(ex is InjectionDefinitionException))
+					ConsoleHelper.WriteError(ex.StackTrace);
+				return false;
+			}
+		}
+
+		public static TypeDefinition ConvertStringToClass(string className, AssemblyDefinition targetAssembly)
+		{
+			var typeDefinition = targetAssembly.MainModule.Types.FirstOrDefault(x => x.Name == className || x.FullName == className);
+			if (typeDefinition == null)
+			{
+				ConsoleHelper.WriteError($"Type \"{className}\" is not found in the target assembly. Please check the spelling of the type and try again.");
+				return null;
+			}
+			return typeDefinition;
+		}
         public static ReturnData ConvertStringToClassAndMethod(string str, AssemblyDefinition targetAssembly)
         {
             var _strSplit = str.Split('.');
@@ -46,45 +82,45 @@ namespace UniversalUnityHooks
             var typeDefinition = targetAssembly.MainModule.Types.FirstOrDefault(x => x.Name == _className || x.FullName == _className);
             if (typeDefinition == null)
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Type \"{_className}\" is not found in the target assembly. Please check the spelling of the type and try again.");
+                ConsoleHelper.WriteError($"Type \"{_className}\" is not found in the target assembly. Please check the spelling of the type and try again.");
                 return null;
             }
             var methodDefinition = typeDefinition.GetMethod(_methodName);
             if (methodDefinition == null)
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Method \"{_methodName}\" not found in class \"{_className}\". inside the target assembly. Please check the spelling of the class and try again.");
+                ConsoleHelper.WriteError($"Method \"{_methodName}\" not found in class \"{_className}\". inside the target assembly. Please check the spelling of the class and try again.");
                 return null;
             }
             return new ReturnData(typeDefinition, methodDefinition);
         }
-        internal static bool Inject(ReturnData data, Attributes.ReturnData<CustomAttribute> hook, AssemblyDefinition targertAssembly, AssemblyDefinition currentAssembly)
-        {
+        internal static bool Inject(ReturnData data, AttributesHelper.ReturnData<CustomAttribute> hook)
+		{
             try
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Injecting method {data.methodDefinition.Name}..");
-                //reflcator
-                var injector =
-                    hook.method.ReturnType.Name != "Void" 
+                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Injecting method \"{data.typeDefinition.Name}.{data.methodDefinition.Name}\"..");
+				//reflcator
+				var injector =
+                    hook.Method.ReturnType != hook.Assembly.MainModule.TypeSystem.Void
                     ? data.methodDefinition.Parameters.Count > 0 
-                        ? new InjectionDefinition(data.methodDefinition, hook.method, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn) 
-                        : new InjectionDefinition(data.methodDefinition, hook.method, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn) 
+                        ? new InjectionDefinition(data.methodDefinition, hook.Method, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef | InjectFlags.ModifyReturn) 
+                        : new InjectionDefinition(data.methodDefinition, hook.Method, InjectFlags.PassInvokingInstance | InjectFlags.ModifyReturn) 
                     : data.methodDefinition.Parameters.Count > 0 
-                        ? new InjectionDefinition(data.methodDefinition, hook.method, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef) 
-                        : new InjectionDefinition(data.methodDefinition, hook.method, InjectFlags.PassInvokingInstance);
+                        ? new InjectionDefinition(data.methodDefinition, hook.Method, InjectFlags.PassInvokingInstance | InjectFlags.PassParametersRef) 
+                        : new InjectionDefinition(data.methodDefinition, hook.Method, InjectFlags.PassInvokingInstance);
 
-                if ((bool)hook.attribute.ConstructorArguments[1].Value)
-                    injector.Inject(-1, null, InjectDirection.Before);
+                if ((bool)hook.Attribute.ConstructorArguments[1].Value)
+                    injector.Inject(-1);
                 else
                     injector.Inject();
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Injected method {data.methodDefinition.Name}.");
+                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Injected method \"{data.typeDefinition.Name}.{data.methodDefinition.Name}\".");
                 return true;
             }
             catch (Exception ex)
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Something went wrong while injecting.");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Message: {ex.Message}");
+                ConsoleHelper.WriteError($"Something went wrong while injecting.");
+                ConsoleHelper.WriteError($"Message: {ex.Message}");
                 if (!(ex is InjectionDefinitionException))
-                    ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, ex.StackTrace);
+                    ConsoleHelper.WriteError(ex.StackTrace);
             }
             return false;
         }
@@ -92,14 +128,14 @@ namespace UniversalUnityHooks
         {
             try
             {
-                targetAssembly.Write(Program.TargetAssembly);
+				targetAssembly.Write(Program.targetAssembly);
                 return true;
             }
             catch (Exception ex)
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Something went wrong while writing changes to target assembly.");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, $"Message: {ex.Message}");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Error, ex.StackTrace);
+                ConsoleHelper.WriteError($"Something went wrong while writing changes to target assembly.");
+                ConsoleHelper.WriteError($"Message: {ex.Message}");
+                ConsoleHelper.WriteError(ex.StackTrace);
             }
             return false;
         }
