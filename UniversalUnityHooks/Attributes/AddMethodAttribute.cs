@@ -17,18 +17,23 @@ namespace UniversalUnityHooks.Attributes
 			TempData = AllAttributes.Where(x => x.Attribute.AttributeType.Name == nameof(HookAttribute.AddMethodAttribute)).ToList();
 			if (TempData == null || TempData.Count == 0)
 			{
-				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Warning, $"No add method attributes were found. ({Timer.GetElapsedMs}ms)\r\n");
+				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Warning, $"No add method attributes were found. ({Timer.GetElapsedMs}ms)");
 				return AddAttributesResponse.Info;
 			}
 			return base.AddAllFound();
 		}
 		public static int InjectHooks(Dictionary<string, List<AttributeData>> attributes, AssemblyDefinition assemblyDefinition)
 		{
+			if (!attributes.ContainsKey(nameof(AddMethodAttribute)))
+				return 0;
 			var injectedCorrectly = 0;
+			ConsoleHelper.WriteNewline();
 			foreach (var hook in attributes[nameof(AddMethodAttribute)])
 			{
 				// Improve: Add check for multiple args here
 				var typeDefinition = Cecil.ConvertStringToClass(hook.Attribute.ConstructorArguments[0].Value.ToString(), assemblyDefinition);
+				if (typeDefinition == null)
+					continue;
 				var methodName = hook.Attribute.ConstructorArguments[1].Value.ToString();
 				if (Cecil.MethodExists(typeDefinition, methodName))
 				{

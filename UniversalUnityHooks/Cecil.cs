@@ -45,11 +45,15 @@ namespace UniversalUnityHooks
 			try
 			{
 				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Injecting new method \"{type.Name}.{methodName}\"..");
-				var methodDefinition = new MethodDefinition(methodName, MethodAttributes.Public, assembly.MainModule.TypeSystem.Void);
+				var methodDefinition = new MethodDefinition(methodName, MethodAttributes.Public, assembly.MainModule.TypeSystem.Void)
+				{
+					IsStatic = type.IsSealed
+				};
 				type.Methods.Add(methodDefinition);
 				var il = methodDefinition.Body.GetILProcessor();
-				methodDefinition.Body.Instructions.Insert(0, il.Create(OpCodes.Ldarg_0));
-				methodDefinition.Body.Instructions.Insert(1, il.Create(OpCodes.Call, assembly.MainModule.Import(hook.Method)));
+				if (!type.IsSealed)
+					methodDefinition.Body.Instructions.Add(il.Create(OpCodes.Ldarg_0));
+				methodDefinition.Body.Instructions.Add(il.Create(OpCodes.Call, assembly.MainModule.Import(hook.Method)));
 				methodDefinition.Body.Instructions.Add(Instruction.Create(OpCodes.Ret));
 				ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Injected new method \"{type.Name}.{methodName}\".");
 				return true;

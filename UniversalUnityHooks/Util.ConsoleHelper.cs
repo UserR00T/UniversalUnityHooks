@@ -64,6 +64,10 @@ namespace UniversalUnityHooks
                 Console.ResetColor();
                 Console.WriteLine(" " + message);
             }
+			public static void WriteNewline()
+			{
+				Console.WriteLine("\n");
+			}
         }
 
     }

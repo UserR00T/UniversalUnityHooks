@@ -10,32 +10,28 @@ namespace TestProject
 {
 	public class Core
 	{
-		public void InjectedMethod()
-		{
-			Console.WriteLine("Magic v1");
-		}
-		public void InjectedMethod2()
-		{
-			Console.WriteLine("Magic v2");
-		}
-
-
-
-
-		[HookAttribute.Hook("Core.InjectedMethod")]
-		public static bool InjectedMethod_M(Core instance)
+		[HookAttribute.Hook("Injected.Method3")]
+		[HasReturnValue]
+		public static bool InjectedMethod_M(Injected instance)
 		{
 			return true;
 		}
-		[HookAttribute.Hook("Core.InjectedMethod2")]
-		public static void InjectedMethod2_M(Core instance)
+		[HookAttribute.Hook("Injected.Method2")]
+		public static void InjectedMethod2_M(Injected instance)
 		{
 			Console.WriteLine("InjectedMethod2_M called");
 		}
-		[AddMethod(nameof(Core), "TestMethod")]
-		public static void OnTestMethod(Core instance)
+
+
+		[AddMethod(nameof(Injected), "TestMethod")]
+		public static void OnTestMethod(Injected instance)
 		{
 			Console.WriteLine("OnTestMethod Called");
+		}
+		[AddMethod(nameof(StaticInjected), "StaticTestMethod")]
+		public static void OnStaticTestMethod()
+		{
+			Console.WriteLine("OnStaticTestMethod Called");
 		}
 	}
 }

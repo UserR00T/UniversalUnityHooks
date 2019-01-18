@@ -21,6 +21,7 @@ namespace UniversalUnityHooks
 		{
 			var typelist = GetTypesInNamespace(Assembly.GetExecutingAssembly(), "UniversalUnityHooks.Attributes");
 			var returnData = new Dictionary<string, List<AttributeData>>();
+			long lastElapsedMs = 0;
 			foreach (var type in typelist)
 			{
 				if (type.BaseType != typeof(Attributes.Attribute))
@@ -32,7 +33,8 @@ namespace UniversalUnityHooks
 				if (attributes == null)
 					continue;
 				returnData.Add(type.Name, attributes);
-				ConsoleHelper.WriteMessage($"Attributes found of type {type.Name}: {attributes.Count}");
+				ConsoleHelper.WriteMessage($"Attributes found of type {type.Name}: {attributes.Count} ({timer.GetElapsedMs - lastElapsedMs}ms)");
+				lastElapsedMs = timer.GetElapsedMs;
 			}
 			return returnData;
 		}
@@ -84,6 +86,7 @@ namespace UniversalUnityHooks
 				Attribute = attribute;
 				Assembly = assembly;
 			}
+			public Cecil.ReturnData TargetData { get; set; }
 			public AssemblyDefinition Assembly { get; set; }
 			public TypeDefinition Type { get; set; }
 			public MethodDefinition Method { get; set; }
