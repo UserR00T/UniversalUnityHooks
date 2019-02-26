@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HasReturnValueAttribute.cs" />
     <Compile Include="AddMethodAttribute.cs" />
     <Compile Include="HookAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

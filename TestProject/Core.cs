@@ -11,7 +11,6 @@ namespace TestProject
 	public class Core
 	{
 		[HookAttribute.Hook("Injected.Method3")]
-		[HasReturnValue]
 		public static bool InjectedMethod_M(Injected instance)
 		{
 			return true;
