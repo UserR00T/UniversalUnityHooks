@@ -66,6 +66,24 @@ It'd compile it like this:
   }
 ```
 
+## Arguments
+The following arguments are allowed:
+``UniversalUnityHooks.exe --help``
+```
+  -t, --target    Set the target assembly file to be injected.
+
+  -i, --input     Set the input assemblies to be injected.
+
+  -o, --output    Set the output directory for assemblies to be copied to. NOTE: This will also be the search
+                  directory. Recommended to keep default.
+
+  -w, --wait      Waits for input before continuing.
+
+  --help          Display this help screen.
+
+  --version       Display version information.
+```
+
 ## License
 
 This code is licenced under the MIT Licence, [Information can be found here.](https://github.com/UserR00T/UniversalUnityHooks/blob/master/LICENSE)
@@ -80,3 +98,10 @@ Unfortunately there are some limitations;
 Ardivaba: https://github.com/Ardivaba
 
 DeathByKorea: https://github.com/DeathByKorea
+
+### Dependencies:
+[commandline](https://github.com/commandlineparser/commandline)
+
+[NetChalker](https://github.com/UserR00T/NetChalker)
+
+[Fody.Costura](https://github.com/Fody/Costura)

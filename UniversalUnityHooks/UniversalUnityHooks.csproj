@@ -51,6 +51,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CommandLine, Version=2.5.0.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.5.0\lib\net461\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="Costura, Version=3.1.6.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.1.6\lib\net46\Costura.dll</HintPath>
     </Reference>
@@ -74,6 +77,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Refs\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
+    <Reference Include="NetChalker">
+      <HintPath>Refs\NetChalker.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -84,17 +90,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assemblies.cs" />
-    <Compile Include="Attributes.cs" />
+    <Compile Include="AssemblyHelper.cs" />
+    <Compile Include="AttributeData.cs" />
+    <Compile Include="AttributesHelper.cs" />
     <Compile Include="Attributes\AddMethodAttribute.cs" />
     <Compile Include="Attributes\Attribute.cs" />
     <Compile Include="Cecil.cs" />
     <Compile Include="Attributes\HookAttributes.cs" />
+    <Compile Include="Cecil.ReturnData.cs" />
+    <Compile Include="Options.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util.ConsoleHelper.cs" />
     <Compile Include="Util.cs" />
-    <Compile Include="Util.OperationTimer.cs" />
+    <Compile Include="OperationTimer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

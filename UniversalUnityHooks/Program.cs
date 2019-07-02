@@ -1,112 +1,116 @@
-﻿using Mono.Cecil;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using UniversalUnityHooks.Attributes;
-using static UniversalUnityHooks.Util;
-using static UniversalUnityHooks.AttributesHelper;
+using NetChalker;
+using System.Diagnostics;
+using CommandLine;
+
 namespace UniversalUnityHooks
 {
-    class Program
+    public static class Program
     {
-        public static string ver = "2.1.0";
-		// Key: Attribute name
-		// Value: Attribute data
-		// Example: Attributes[nameof(HookAttributes)] gets all the attributes found of type HookAttributes from all resources.
-		public static Dictionary<string, List<AttributeData>> Attributes { get; set; } = new Dictionary<string, List<AttributeData>>();
+        public static string Version { get; } = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
+        /// <summary>
+        /// Stores all found attributes by type.
+        /// <para>Example: Attributes[nameof(HookAttributes)] gets all the attributes found of type HookAttributes from all resources.</para>
+        /// </summary>
+        public static Dictionary<string, List<AttributeData>> Attributes { get; set; } = new Dictionary<string, List<AttributeData>>();
 
-		public static string managedFolder;
-        public static string targetAssembly = "Assembly-CSharp.dll";
-        public static string pluginsFolder = "Plugins\\";
-        public static bool waitForInput;
-        static void Main(string[] args)
+        public static string PluginsFolder { get; private set; }
+
+        public static string TargetAssembly { get; private set; }
+
+        public static string TargetAssemblyClean { get; private set; }
+
+        public static string OutputFolder { get; private set; }
+
+        public static Chalker Chalker { get; set; } = new Chalker();
+
+        public static AssemblyHelper AssemblyHelper { get; private set; }
+
+        public static AttributesHelper AttributesHelper { get; } = new AttributesHelper();
+
+        public static Cecil Cecil { get; } = new Cecil();
+
+        public static void Main(string[] args)
         {
-            waitForInput |= args.Contains("-waitforinput");
-            Console.WriteLine($"Universal Unity Hooks v{ver}");
-            var timer = new OperationTimer();
+            Parser.Default.ParseArguments<Options>(args).WithParsed((options) => Options.Instance = options).WithNotParsed((_) => Util.Exit());
+            Console.WriteLine($"Universal Unity Hooks v{Version}");
+            Options.Instance.GetTargetAssembly(out var targetAssemblyName, out var targetAssemblyNameClean);
+            TargetAssembly = targetAssemblyName;
+            TargetAssemblyClean = targetAssemblyNameClean;
+            PluginsFolder = Options.Instance.GetInputDirectory();
+            OutputFolder = Options.Instance.GetOutputDirectory();
             Util.CreateFiles();
-            managedFolder = GetManagedDirectory();
-            if (managedFolder == null)
-            {
-                if (waitForInput)
-                    Console.ReadKey();
-                Environment.Exit(-1);
-            }
-            targetAssembly = Path.Combine(managedFolder, targetAssembly);
-            var TargetAssemblyClean = Path.Combine(managedFolder, targetAssembly + ".clean");
-            ConsoleHelper.WriteMessage($"Found target assembly: {targetAssembly}");
+            Chalker.WriteMessage($"Target assembly file: {TargetAssembly}");
+            Chalker.WriteMessage($"Target plugins & search directory: {PluginsFolder}");
+            Console.WriteLine();
+            var timer = new OperationTimer();
+            AssemblyHelper = new AssemblyHelper(PluginsFolder);
+            AssemblyHelper.FetchAndLoadAll();
             Console.WriteLine();
 
-            Assemblies.GetAllAssembliesInsideDirectory(pluginsFolder);
-            Console.WriteLine();
-
-			// Improve
-            var sum = Attributes.Sum(x=>x.Value.Count);
+            var sum = Attributes.Sum(x => x.Value.Count);
             if (sum == 0)
             {
-                ConsoleHelper.WriteError($"No attributes have been loaded in. Press any key to exit the program.");
-                if (waitForInput)
-                    Console.ReadKey();
-                Environment.Exit(-1);
+                Chalker.WriteError("No attributes have been loaded in. Press any key to exit the program.");
+                Util.Exit();
             }
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Total of {sum} attribute(s) have been loaded in.");
+            Chalker.WriteSuccess($"Total of {sum} attribute(s) have been loaded in.");
 
             Console.WriteLine();
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Loading target assembly..");
+            Chalker.WriteWait("Loading target assembly..");
             try
             {
                 if (File.Exists(TargetAssemblyClean))
                 {
-                    File.Delete(targetAssembly);
-                    File.Copy(TargetAssemblyClean, targetAssembly);
+                    File.Delete(TargetAssembly);
+                    File.Copy(TargetAssemblyClean, TargetAssembly);
                 }
                 else
-                    File.Copy(targetAssembly, TargetAssemblyClean);
+                {
+                    File.Copy(TargetAssembly, TargetAssemblyClean);
+                }
             }
             catch (Exception ex)
             {
-                ConsoleHelper.WriteError("Something went wrong while trying to get or copy the target assembly file.");
-                ConsoleHelper.WriteError($"Message: {ex.Message}");
-                ConsoleHelper.WriteError(ex.StackTrace);
-                if (waitForInput)
-                    Console.ReadKey();
-                Environment.Exit(-1);
+                Chalker.WriteError("Something went wrong while trying to get or copy the target assembly file.");
+                Chalker.WriteError($"Message: {ex.Message}");
+                Chalker.WriteError(ex.StackTrace);
+                Util.Exit();
             }
-            var assemblyDefinition = Cecil.ReadAssembly(targetAssembly);
-            if (assemblyDefinition == null)
+            if (!Util.ReadAssembly(TargetAssembly, OutputFolder, out var assemblyDefinition))
             {
-                ConsoleHelper.WriteError("Press any key to exit this program.");
-                if (waitForInput)
-                    Console.ReadKey();
-                Environment.Exit(-1);
+                Chalker.WriteError("Press any key to exit this program.");
+                Util.Exit();
             }
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Target assembly loaded in.");
+            Chalker.WriteSuccess("Target assembly loaded in.");
 
             Console.WriteLine();
-			var injectedCorrectly = InjectAllHooks(Attributes, assemblyDefinition);
+			var injectedCorrectly = Util.InjectAllHooks(Attributes, assemblyDefinition);
 			Console.WriteLine();
             if (injectedCorrectly == 0)
-                ConsoleHelper.WriteError($"No methods have been injected correctly. Please read above for more information why some injections may have failed.");
+            {
+                Chalker.WriteError($"No methods have been injected correctly. Please read above for more information why some injections may have failed.");
+            }
             else
             {
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Injected {(injectedCorrectly == sum ? $"all {sum}" : $"{injectedCorrectly}/{sum}")} methods. {(injectedCorrectly != sum ? "Please read above for more information why some injections may have failed." : "")}");
-                ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, "Writing changes to target assembly..");
-                if (Cecil.WriteChanges(assemblyDefinition))
-                    ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Changes have been written to the file {targetAssembly}!");
+                Chalker.WriteSuccess($"Injected {(injectedCorrectly == sum ? $"all {sum}" : $"{injectedCorrectly}/{sum}")} methods. {(injectedCorrectly != sum ? "Please read above for more information why some injections may have failed." : "")}");
+                Chalker.WriteWait("Writing changes to target assembly..");
+                if (Cecil.WriteChanges(assemblyDefinition, Path.GetFileName(TargetAssembly)))
+                    Chalker.WriteSuccess($"Changes have been written to the file {TargetAssembly}!");
             }
             Console.WriteLine();
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, "Copying dll's to target assembly's folder..");
+            Chalker.WriteWait("Copying dll's to target assembly's folder..");
             try
             {
-                foreach (var file in Directory.GetFiles(pluginsFolder, "*.dll"))
+                foreach (var file in Directory.GetFiles(PluginsFolder, "*.dll"))
                 {
-                    ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Wait, $"Copying file {file} to target folder..");
-                    var target = Path.Combine(managedFolder, Path.GetFileName(file));
+                    Chalker.WriteWait($"Copying file {file} to target folder..");
+                    var target = Path.Combine(OutputFolder, Path.GetFileName(file));
                     if (File.Exists(target))
                         File.Delete(target);
                     File.Copy(file, target);
@@ -114,20 +118,16 @@ namespace UniversalUnityHooks
             }
             catch (Exception ex)
             {
-                ConsoleHelper.WriteError("Something went wrong while trying to copy a plugin file.");
-                ConsoleHelper.WriteError($"Message: {ex.Message}");
-                ConsoleHelper.WriteError(ex.StackTrace);
-                if (waitForInput)
-                    Console.ReadKey();
-                Environment.Exit(-1);
+                Chalker.WriteError("Something went wrong while trying to copy a plugin file.");
+                Chalker.WriteError($"Message: {ex.Message}");
+                Chalker.WriteError(ex.StackTrace);
+                Util.Exit();
             }
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, "All files have been copied.");
+            Chalker.WriteSuccess("All files have been copied.");
             timer.Stop();
             Console.WriteLine();
-            ConsoleHelper.WriteMessage(ConsoleHelper.MessageType.Success, $"Done. Operation took {timer.GetElapsedMs}ms. Press any key to exit the program.");
-            if (waitForInput)
-                Console.ReadKey();
-            Environment.Exit(0);
+            Chalker.WriteSuccess($"Done. Operation took {timer.GetElapsedMs}ms. Press any key to exit the program.");
+            Util.Exit(0);
         }
     }
 }
