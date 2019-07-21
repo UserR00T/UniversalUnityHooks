@@ -100,6 +100,10 @@ Ardivaba: https://github.com/Ardivaba
 DeathByKorea: https://github.com/DeathByKorea
 
 ### Dependencies:
+[Mono.Cecil.Inject](https://github.com/denikson/Mono.Cecil.Inject)
+
+[Mono.Cecil](https://github.com/jbevain/cecil)
+
 [commandline](https://github.com/commandlineparser/commandline)
 
 [NetChalker](https://github.com/UserR00T/NetChalker)
