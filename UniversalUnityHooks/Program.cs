@@ -100,7 +100,7 @@ namespace UniversalUnityHooks
             {
                 Chalker.WriteSuccess($"Injected {(injectedCorrectly == sum ? $"all {sum}" : $"{injectedCorrectly}/{sum}")} methods. {(injectedCorrectly != sum ? "Please read above for more information why some injections may have failed." : "")}");
                 Chalker.WriteWait("Writing changes to target assembly..");
-                if (Cecil.WriteChanges(assemblyDefinition, Path.GetFileName(TargetAssembly)))
+                if (Cecil.WriteChanges(assemblyDefinition, TargetAssembly))
                     Chalker.WriteSuccess($"Changes have been written to the file {TargetAssembly}!");
             }
             Console.WriteLine();
