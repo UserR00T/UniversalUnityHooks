@@ -27,14 +27,19 @@ namespace UniversalUnityHooks
                         var assembly = AssemblyDefinition.ReadAssembly(Path.GetFullPath(file));
                         var allAttributes = Program.AttributesHelper.FindInAssembly(assembly);
 						var filteredAttributes = Program.AttributesHelper.InstantiateAndInvoke(allAttributes, timer);
-						foreach (var keyValuePair in filteredAttributes)
-							Program.Attributes.Add(keyValuePair.Key, keyValuePair.Value);
+                        foreach (var kvp in filteredAttributes)
+                        {
+                            if (!Program.Attributes.ContainsKey(kvp.Key))
+                            {
+                                Program.Attributes.Add(kvp.Key, kvp.Value);
+                            }
+                            Program.Attributes[kvp.Key].AddRange(kvp.Value);
+                        }
 						timer.Stop();
                         Program.Chalker.WriteSuccess($"Loaded in assembly and {filteredAttributes.Sum(x=>x.Value.Count)} attribute(s) in {timer.GetElapsedMs}ms\r\n");
                     }
                     catch (Exception ex)
                     {
-						Program.Chalker.WriteError(ex.InnerException.StackTrace);
 						timer.Stop();
                         Program.Chalker.WriteError($"Could not load in assembly after {timer.GetElapsedMs}ms.");
                         Program.Chalker.WriteError($"Message: {ex.Message}");
