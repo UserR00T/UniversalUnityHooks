@@ -33,7 +33,10 @@ namespace UniversalUnityHooks
                             {
                                 Program.Attributes.Add(kvp.Key, kvp.Value);
                             }
-                            Program.Attributes[kvp.Key].AddRange(kvp.Value);
+                            else
+                            {
+                                Program.Attributes[kvp.Key].AddRange(kvp.Value);
+                            }
                         }
 						timer.Stop();
                         Program.Chalker.WriteSuccess($"Loaded in assembly and {filteredAttributes.Sum(x=>x.Value.Count)} attribute(s) in {timer.GetElapsedMs}ms\r\n");
