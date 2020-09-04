@@ -1,0 +1,27 @@
+name: Build and upload artifacts 
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  UniversalUnityHooks-Core:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup .NET Core 3.1.101
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Install dependencies
+        run: dotnet restore UniversalUnityHooks.Core/UniversalUnityHooks.Core.csproj
+      - name: Build
+        run: dotnet build UniversalUnityHooks.Core/UniversalUnityHooks.Core.csproj --configuration Release --no-restore
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v1
+        with:
+          name: UniversalUnityHooks.Core.${{github.sha}}-b${{github.run_number}}
+          path: UniversalUnityHooks.Core/bin/Release/netcoreapp3.1/
