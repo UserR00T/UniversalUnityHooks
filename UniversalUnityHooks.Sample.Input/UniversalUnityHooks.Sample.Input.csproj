@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\UniversalUnityHooks.Attributes\UniversalUnityHooks.Attributes.csproj" />
+    <ProjectReference Include="..\UniversalUnityHooks.Sample.Target\UniversalUnityHooks.Sample.Target.csproj" />
+    <ProjectReference Include="..\UniversalUnityHooks.Core\UniversalUnityHooks.Core.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+</Project>
