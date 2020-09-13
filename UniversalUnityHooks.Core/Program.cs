@@ -1,4 +1,4 @@
-using CliFx;
+﻿using CliFx;
 using CliFx.Attributes;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -57,6 +57,7 @@ namespace UniversalUnityHooks.Core
 
             if (File.Exists(Target.FullName + ".clean"))
             {
+                File.Delete(Target.FullName);
                 File.Copy(Target.FullName + ".clean", Target.FullName, true);
             }
 
