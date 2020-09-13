@@ -26,7 +26,7 @@ namespace UniversalUnityHooks.Core
             {
                 return;
             }
-            Fail($"Assert failed: {file.FullName} is not a directory.");
+            Fail($"{file.FullName} is not a directory.");
         }
 
         public static void IsNotDirectory(FileInfo file)
@@ -36,7 +36,7 @@ namespace UniversalUnityHooks.Core
             {
                 return;
             }
-            Fail($"Assert failed: {file.FullName} is a directory.");
+            Fail($"{file.FullName} is a directory.");
         }
 
         public static void HasExtension(FileInfo file, string extension)
@@ -45,7 +45,7 @@ namespace UniversalUnityHooks.Core
             {
                 return;
             }
-            Fail($"Assert failed: Expected extension '{extension}' for file '{file.FullName}', but got '{file.Extension}'.");
+            Fail($"Expected extension '{extension}' for file '{file.FullName}', but got '{file.Extension}'.");
         }
     }
 }
