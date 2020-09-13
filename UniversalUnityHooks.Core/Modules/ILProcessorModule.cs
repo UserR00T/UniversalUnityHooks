@@ -18,6 +18,28 @@ namespace UniversalUnityHooks.Core.Modules
             var targetMethod = attribute?.Method ?? Method.Name;
             var targetMethodDefinition = TargetAssembly.MainModule.GetType(attribute.Type.FullName).GetMethod(targetMethod);
             var il = targetMethodDefinition.Body.GetILProcessor();
+            if (!MethodInfo.IsStatic)
+            {
+                CliAssert.Fail("The ILProcessorModule method must be static.");
+            }
+            var parameters = MethodInfo.GetParameters();
+            if (parameters.Length != 3)
+            {
+                CliAssert.Fail("The ILProcessorModule method must exactly have 3 arguments, of types 'ILProcessor', 'ILProcessor', and 'AssemblyDefinition'.");
+            }
+            var types = new Type[]
+            {
+                typeof(ILProcessor),
+                typeof(MethodDefinition),
+                typeof(AssemblyDefinition)
+            };
+            for (int i = 0; i < types.Length; i++)
+            {
+                if (parameters[i].ParameterType != types[i])
+                {
+                    CliAssert.Fail($"Expected parameter {i} to be of type {types[i].FullName}, but was actually {parameters[i].ParameterType.FullName}.");
+                }
+            }
             MethodInfo.Invoke(null, new object[] { il, targetMethodDefinition, TargetAssembly });
         }
     }
