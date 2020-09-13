@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Inject;
@@ -26,27 +25,7 @@ namespace UniversalUnityHooks.Core.Modules
             {
                 targetMethodDefinition = TargetAssembly.MainModule.GetType(attribute.Type.FullName).GetMethod(targetMethod);
             }
-
-            InjectFlags flags = default;
-            // If target method and target type is not static, append PassInvokingInstance to flags.
-            if (!targetMethodDefinition.IsStatic && !Type.IsSealed)
-            {
-                flags = InjectFlags.PassInvokingInstance;
-            }
-            if (targetMethodDefinition.Parameters.Count > 0)
-            {
-                flags |= InjectFlags.PassParametersRef;
-            }
-            if (Method.ReturnType.FullName != TargetAssembly.MainModule.TypeSystem.Void.FullName)
-            {
-                flags |= InjectFlags.ModifyReturn;
-            }
-
-            if (attribute?.Flags != InjectFlags.None)
-            {
-                flags = attribute.Flags;
-            }
-
+            var flags = GetInjectFlags(targetMethodDefinition, attribute?.Flags);
             var injector = new InjectionDefinition(targetMethodDefinition, Method, flags);
             injector.Inject(attribute.StartCode, attribute.Token, attribute.Direction);
         }

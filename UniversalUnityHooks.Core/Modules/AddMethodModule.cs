@@ -19,17 +19,7 @@ namespace UniversalUnityHooks.Core.Modules
                 IsStatic = Type.IsSealed
             };
             Type.Methods.Add(methodDefinition);
-            // TODO: currently dry coded
-            var flags = InjectFlags.PassInvokingInstance;
-            if (methodDefinition.Parameters.Count > 0)
-            {
-                flags |= InjectFlags.PassParametersRef;
-            }
-            if (Method.ReturnType != TargetAssembly.MainModule.TypeSystem.Void)
-            {
-                flags |= InjectFlags.ModifyReturn;
-            }
-
+            var flags = GetInjectFlags(methodDefinition, attribute?.Flags);
             var injector = new InjectionDefinition(methodDefinition, Method, attribute?.Flags ?? flags);
             injector.Inject(attribute.StartCode, attribute.Token, attribute.Direction);
         }
