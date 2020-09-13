@@ -1,4 +1,4 @@
-﻿using CliFx;
+using CliFx;
 using CliFx.Attributes;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using Mono.Cecil;
 using System.Reflection;
 using UniversalUnityHooks.Core.Modules;
 using UniversalUnityHooks.Core.Interfaces;
+using UniversalUnityHooks.Core.Utility;
 
 namespace UniversalUnityHooks.Core
 {
@@ -33,8 +34,8 @@ namespace UniversalUnityHooks.Core
             console.Output.WriteLine($"input command {string.Join(",", Files)}");
             if (Target == null)
             {
-                // TODO: Default to Assembly-CSharp.dll file
-                console.Output.WriteLine("Target is null, defaulting to ?_Data/Managed/Assembly-CSharp.dll");
+                console.Output.WriteLine("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
+                Target = Util.FindAssemblyCSharp(Directory.GetCurrentDirectory());
             }
             // TODO: More asserts, especially on input files
             CliAssert.IsRequired(Target, "Target Assembly (target,t)");
