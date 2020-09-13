@@ -5,24 +5,34 @@ using UniversalUnityHooks.Core.Interfaces;
 
 namespace UniversalUnityHooks.Core.Abstractions
 {
-    // TODO: figure out how to do inheritdocs
+    /// <summary>
+    /// A abstract type for the <see cref="UniversalUnityHooks.Core.Interfaces.IModule"/> type.
+    /// </summary>
+    /// <typeparam name="AttributeType">The attribute associated to the module. This is used to get a statically typed variable to the overridden method.</typeparam>
     public abstract class Module<AttributeType> : IModule where AttributeType : Attribute
     {
+        /// <inheritdoc/>
         public MethodDefinition Method { get; private set; }
 
+        /// <inheritdoc/>
         public MethodInfo MethodInfo { get; private set; }
 
+        /// <inheritdoc/>
         public TypeDefinition Type { get; private set; }
 
+        /// <inheritdoc/>
         public AssemblyDefinition ExecutingAssembly { get; private set; }
 
+        /// <inheritdoc/>
         public AssemblyDefinition TargetAssembly { get; private set; }
 
+        /// <inheritdoc/>
         public virtual bool IsValidAttribute(CustomAttribute attribute)
         {
             return attribute.AttributeType.FullName == typeof(AttributeType).FullName;
         }
 
+        /// <inheritdoc/>
         public void Execute(MethodDefinition method, MethodInfo methodInfo, TypeDefinition type, AssemblyDefinition executingAssembly, AssemblyDefinition targetAssembly)
         {
             Method = method;
