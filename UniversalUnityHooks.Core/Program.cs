@@ -29,6 +29,9 @@ namespace UniversalUnityHooks.Core
         [CommandOption("dry", 'd', Description = "If this value is true, the program will not write any changes to the target dll. This however will replace the dll with the clear one (filename.dll.clean), if found.")]
         public bool DryRun { get; set; }
 
+        [CommandOption("addtargetresolver", 'm', Description = "Automatically adds the target parent folder to the assembly resolver.")]
+        public bool AddTargetDirectoryResolve { get; set; } = true;
+
         public ValueTask ExecuteAsync(IConsole console)
         {
             console.Output.WriteLine($"input command {string.Join(",", Files)}");
@@ -45,6 +48,10 @@ namespace UniversalUnityHooks.Core
             foreach (var resolveDirectory in ResolveDirectories)
             {
                 resolver.AddSearchDirectory(resolveDirectory.FullName);
+            }
+            if (AddTargetDirectoryResolve)
+            {
+                resolver.AddSearchDirectory(Target.DirectoryName);
             }
             var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName);
 
