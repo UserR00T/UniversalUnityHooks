@@ -2,6 +2,7 @@
 using UniversalUnityHooks.Attributes;
 using UniversalUnityHooks.Sample.Target;
 using UniversalUnityHooks.Core.LowLevelModule;
+using UniversalUnityHooks.Core.Models;
 
 namespace UniversalUnityHooks.Sample.Input
 {
@@ -66,6 +67,9 @@ namespace UniversalUnityHooks.Sample.Input
 
             // Changes 'privateInt' from 'private' to 'public'.
             injector.Target<ExampleType>("privateInt").ChangeAccess(true);
+            
+            // Same code, just a bit differently written.
+            injector.Target<ExampleType>(x => nameof(x.publicInt)).To(AccessModifier.Public);
 
             // Set the target method, which will be used as injection target.
             injector.Target<ExampleType>(x => nameof(x.OutputValue));

@@ -144,6 +144,21 @@ namespace UniversalUnityHooks.Core.LowLevelModule
             TargetMethod.Body.Instructions.Clear();
             return Hook(hookMethod, hookData);
         }
+
+        public Injector To(AccessModifier modifiers, bool recursive = false)
+        {
+            return To(TargetField.Name, modifiers, recursive);
+        }
+
+        public Injector To(string member, AccessModifier modifiers, bool recursive = false)
+        {
+            ChangeAccess(member,
+                         modifiers.HasFlag(AccessModifier.Public) && !modifiers.HasFlag(AccessModifier.Private),
+                         modifiers.HasFlag(AccessModifier.Virtual),
+                         modifiers.HasFlag(AccessModifier.Assignable),
+                         recursive);
+            return this;
+        }
     
         public Injector ChangeAccess(string member, bool makePublic = true, bool makeVirtual = true, bool makeAssignable = true, bool recursive = false)
         {
