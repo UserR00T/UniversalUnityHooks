@@ -95,5 +95,10 @@ namespace UniversalUnityHooks.Logging
         {
             Log("warn", ConsoleColor.Yellow, Id, message);
         }
+
+        public void NewLine()
+        {
+            Console.WriteLine();
+        }
     }
 }

@@ -103,7 +103,7 @@ namespace UniversalUnityHooks.Core.Commands
             {
                 ReadAndExecute(input, modules, targetDefinition);
             }
-            Console.WriteLine();
+            _logger.NewLine();
             if (!DryRun)
             {
                 WriteChanges(targetDefinition);
@@ -119,7 +119,7 @@ namespace UniversalUnityHooks.Core.Commands
 
         private void ReadAndExecute(FileInfo input, List<IModule> modules, AssemblyDefinition targetDefinition)
         {
-            Console.WriteLine();
+            _logger.NewLine();
             _logger.LogDebug($"Reading input file '{input.FullName}'...");
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(input.FullName);
             var inputReflection = Assembly.LoadFrom(input.FullName);
@@ -153,7 +153,7 @@ namespace UniversalUnityHooks.Core.Commands
                                 continue;
                             }
                             st.Reset();
-                            Console.WriteLine();
+                            _logger.NewLine();
                             inputLogger.LogInformation($"Found attribute '{module.GetType().Name}<{customAttribute.AttributeType.Name}>' attached to method '{type.FullName}.{method.Name}'.");
                             var methodInfo = inputReflection.GetType(type.FullName).GetMethod(method.Name);
                             st.Start();
