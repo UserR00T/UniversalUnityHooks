@@ -16,7 +16,7 @@ using UniversalUnityHooks.Logging;
 
 namespace UniversalUnityHooks.Core.Commands
 {
-    [Command]
+    [Command("execute", Description = "Loads in input and target assembly files and executes modules on each attribute-decorated method inside the input assembly files.")]
     public class ExecuteModules : ICommand
     {
         [CommandOption("input", 'i', Description = "Input files.", IsRequired = true)]
