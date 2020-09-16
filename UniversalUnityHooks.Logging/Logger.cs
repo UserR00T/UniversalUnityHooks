@@ -76,6 +76,11 @@ namespace UniversalUnityHooks.Logging
             Log("debug", ConsoleColor.DarkGray, Id, message);
         }
 
+        public void LogDebug(string message, int debugLevel)
+        {
+            throw new NotImplementedException();
+        }
+
         public void LogError(string message)
         {
             Log("error", ConsoleColor.Red, Id, message);
