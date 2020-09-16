@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\UniversalUnityHooks.Attributes\UniversalUnityHooks.Attributes.csproj" />
+    <ProjectReference Include="..\UniversalUnityHooks.Logging\UniversalUnityHooks.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>
