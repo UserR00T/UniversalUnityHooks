@@ -19,5 +19,7 @@ namespace UniversalUnityHooks.Logging.Interfaces
         void LogError(string message);
 
         void LogCritical(string message);
+
+        void NewLine();
     }
 }
