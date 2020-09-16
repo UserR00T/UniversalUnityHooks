@@ -13,9 +13,13 @@ using UniversalUnityHooks.Core.Interfaces;
 using UniversalUnityHooks.Core.Modules;
 using UniversalUnityHooks.Core.Utility;
 using UniversalUnityHooks.Logging;
+using UniversalUnityHooks.Logging.Interfaces;
 
 namespace UniversalUnityHooks.Core.Commands
 {
+    /// <summary>
+    /// Loads in input and target assembly files and executes modules on each attribute-decorated method inside the input assembly files.
+    /// </summary>
     [Command("execute", Description = "Loads in input and target assembly files and executes modules on each attribute-decorated method inside the input assembly files.")]
     public class ExecuteModules : ICommand
     {
@@ -37,28 +41,25 @@ namespace UniversalUnityHooks.Core.Commands
         [CommandOption("addtargetresolver", 'm', Description = "Automatically adds the target parent folder to the assembly resolver.")]
         public bool AddTargetDirectoryResolve { get; set; } = true;
 
-        public ValueTask ExecuteAsync(IConsole console)
+        private readonly ILogger _logger = new Logger("Core");
+
+        public ValueTask ExecuteAsync(IConsole _)
         {
             var totalSw = new Stopwatch();
             totalSw.Start();
-            var logger = new Logger("Core");
             // TODO: Fetch version number from csproj
-            logger.LogInformation("UniversalUnityHooks 3.0");
-            // foreach (var item in Enum.GetValues(typeof(Logging.Models.LogLevel)))
-            // {
-            //     logger.Log((Logging.Models.LogLevel)item, "Hi there");
-            // }
+            _logger.LogInformation("UniversalUnityHooks 3.0");
             if (Target == null)
             {
-                logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
+                _logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
                 Target = Util.FindAssemblyCSharp(Directory.GetCurrentDirectory());
             }
-            logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'");
+            _logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'");
             // TODO: More asserts, especially on input files
             CliAssert.IsRequired(Target, "Target Assembly (target,t)");
             CliAssert.IsNotDirectory(Target);
             CliAssert.HasExtension(Target, ".dll");
-            logger.LogDebug("Asserts passed, adding resolver...");
+            _logger.LogDebug("Asserts passed, adding resolver...");
             var resolver = new DefaultAssemblyResolver();
             foreach (var resolveDirectory in ResolveDirectories)
             {
@@ -70,89 +71,118 @@ namespace UniversalUnityHooks.Core.Commands
             }
             if (File.Exists(Target.FullName + ".clean"))
             {
-                logger.LogDebug($"'.clean' File exists, overwriting target assembly with clean file...");
+                _logger.LogDebug($"'.clean' File exists, overwriting target assembly with clean file...");
                 File.Delete(Target.FullName);
                 File.Copy(Target.FullName + ".clean", Target.FullName, true);
             }
-            logger.LogDebug($"Reading assembly from '{Target.FullName}'...");
-            var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName);
+            _logger.LogDebug($"Reading assembly from '{Target.FullName}'...");
+            var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName, new ReaderParameters { AssemblyResolver = resolver });
             var modules = new List<IModule>();
             modules.Add(new HookModule());
             modules.Add(new AddMethodModule());
             modules.Add(new ILProcessorModule());
             modules.Add(new Modules.LowLevelModule());
-            logger.LogDebug($"{modules.Count} Module(s) loaded.");
+            _logger.LogDebug($"{modules.Count} Module(s) loaded.");
+
+            // Loops over input files and appends all files inside directories to files
+            for (int i = 0; i < Files.Count; i++)
+            {
+                var file = Files[i];
+                var attr = File.GetAttributes(file.FullName);
+                if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
+                {
+                    continue;
+                }
+                _logger.LogDebug("Input directory: '{file.FullName}' - Adding files from directory");
+                // Adds all files from directory to list
+                Files.AddRange(new DirectoryInfo(file.FullName).GetFiles("*.dll"));
+                Files.RemoveAt(i);
+            }
+
             foreach (var input in Files)
             {
-                logger.LogDebug($"Reading input file '{input.FullName}'...");
-                var assemblyDefinition = AssemblyDefinition.ReadAssembly(input.FullName);
-                var inputReflection = Assembly.LoadFrom(input.FullName);
-                var types = assemblyDefinition.MainModule.GetTypes().ToList();
-                var name = inputReflection.GetName();
-                var inputLogger = new Logger($"Input::{name.Name}@{name.Version}");
-                var sb = new StringBuilder();
-                sb.Append("File Name: ".PadRight(16)).AppendLine(input.Name);
-                sb.Append("Name: ".PadRight(16)).AppendLine(name.ToString());
-                sb.Append("ProcessorArch: ".PadRight(16)).AppendLine(name.ProcessorArchitecture.ToString());
-                sb.Append("CLR Version: ".PadRight(16)).AppendLine(inputReflection.ImageRuntimeVersion);
-                sb.Append("Detected Types: ".PadRight(16)).Append(types.Count.ToString());
-                inputLogger.LogDebug(sb.ToString());
-                var st = new Stopwatch();
-                
-                foreach (var type in types)
-                {
-                    foreach (var method in type.Methods)
-                    {
-                        var customAttributes = method.CustomAttributes;
-                        if (customAttributes?.Count == 0)
-                        {
-                            continue;
-                        }
-                        foreach (var customAttribute in customAttributes)
-                        {
-                            foreach (var module in modules)
-                            {
-                                if (!module.IsValidAttribute(customAttribute))
-                                {
-                                    continue;
-                                }
-                                st.Reset();
-                                Console.WriteLine();
-                                inputLogger.LogInformation($"Found attribute '{module.GetType().Name}<{customAttribute.AttributeType.Name}>' attached to method '{type.FullName}.{method.Name}'.");
-                                // console.Output.WriteLine($"{method.FullName} - Executing attribute\n - Attribute found: {customAttribute.AttributeType.Name}\n - Module handler: {module.GetType().Name}");
-                                var methodInfo = inputReflection.GetType(type.FullName).GetMethod(method.Name);
-                                st.Start();
-                                module.Execute(method, methodInfo, type, assemblyDefinition, targetDefinition);
-                                inputLogger.LogInformation($"Module executed in {st.ElapsedMilliseconds}ms.");
-                            }
-                        }
-                    }
-                }
+                ReadAndExecute(input, modules, targetDefinition);
             }
             Console.WriteLine();
             if (!DryRun)
             {
-                logger.LogInformation("Writing changes to target assembly...");
-                File.Copy(Target.FullName, Target.FullName + ".clean", true);
-                File.Delete(Target.FullName);
-                targetDefinition.Write(Target.FullName);
-                logger.LogInformation("Changes written!");
+                WriteChanges(targetDefinition);
             }
 
-
-            // Copy hooks
             if (CopyToTarget)
             {
-                logger.LogInformation("Copying files to target...");
-                foreach (var input in Files)
+                CopyInputFiles();
+            }
+            _logger.LogInformation($"Operation completed. Operation took {totalSw.ElapsedMilliseconds}ms.");
+            return default;
+        }
+
+        private void ReadAndExecute(FileInfo input, List<IModule> modules, AssemblyDefinition targetDefinition)
+        {
+            Console.WriteLine();
+            _logger.LogDebug($"Reading input file '{input.FullName}'...");
+            var assemblyDefinition = AssemblyDefinition.ReadAssembly(input.FullName);
+            var inputReflection = Assembly.LoadFrom(input.FullName);
+            var types = assemblyDefinition.MainModule.GetTypes().ToList();
+            var name = inputReflection.GetName();
+            var inputLogger = new Logger($"Input::{name.Name}@{name.Version}");
+            var sb = new StringBuilder();
+            sb.Append("File Name: ".PadRight(16)).AppendLine(input.Name);
+            sb.Append("Name: ".PadRight(16)).AppendLine(name.ToString());
+            sb.Append("ProcessorArch: ".PadRight(16)).AppendLine(name.ProcessorArchitecture.ToString());
+            sb.Append("CLR Version: ".PadRight(16)).AppendLine(inputReflection.ImageRuntimeVersion);
+            sb.Append("Detected Types: ".PadRight(16)).Append(types.Count.ToString());
+            inputLogger.LogDebug(sb.ToString());
+            var st = new Stopwatch();
+            
+            foreach (var type in types)
+            {
+                foreach (var method in type.Methods)
                 {
-                    var to = Path.Combine(Target.DirectoryName, input.Name);
-                    logger.LogDebug($"{input.Name} -> {to}");
-                    input.CopyTo(to, true);
+                    var customAttributes = method.CustomAttributes;
+                    if (customAttributes?.Count == 0)
+                    {
+                        continue;
+                    }
+                    foreach (var customAttribute in customAttributes)
+                    {
+                        foreach (var module in modules)
+                        {
+                            if (!module.IsValidAttribute(customAttribute))
+                            {
+                                continue;
+                            }
+                            st.Reset();
+                            Console.WriteLine();
+                            inputLogger.LogInformation($"Found attribute '{module.GetType().Name}<{customAttribute.AttributeType.Name}>' attached to method '{type.FullName}.{method.Name}'.");
+                            var methodInfo = inputReflection.GetType(type.FullName).GetMethod(method.Name);
+                            st.Start();
+                            module.Execute(method, methodInfo, type, assemblyDefinition, targetDefinition);
+                            inputLogger.LogInformation($"Module executed in {st.ElapsedMilliseconds}ms.");
+                        }
+                    }
                 }
             }
-            logger.LogInformation($"Operation completed. Operation took {totalSw.ElapsedMilliseconds}ms.");
-            return default;
+        }
+
+        private void WriteChanges(AssemblyDefinition targetDefinition)
+        {
+            _logger.LogInformation("Writing changes to target assembly...");
+            File.Copy(Target.FullName, Target.FullName + ".clean", true);
+            File.Delete(Target.FullName);
+            targetDefinition.Write(Target.FullName);
+            _logger.LogInformation("Changes written!");
+        }
+
+        private void CopyInputFiles()
+        {
+            _logger.LogInformation("Copying files to target...");
+            foreach (var input in Files)
+            {
+                var to = Path.Combine(Target.DirectoryName, input.Name);
+                _logger.LogDebug($"{input.Name} -> {to}");
+                input.CopyTo(to, true);
+            }
         }
     }
 }
