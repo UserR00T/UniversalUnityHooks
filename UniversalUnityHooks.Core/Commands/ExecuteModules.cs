@@ -50,6 +50,7 @@ namespace UniversalUnityHooks.Core.Commands
         {
             _logger.Settings.DebugVerbosity = (int)Verbosity;
             _sw.Start();
+            _logger.LogInformation($"UniversalUnityHooks v{Program.Version}");
             if (Target == null)
             {
                 _logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
