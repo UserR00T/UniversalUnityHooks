@@ -28,5 +28,30 @@ namespace UniversalUnityHooks.Core.Utility
             }
             return null;
         }
+
+        /// <summary>
+        /// Flattens directories by grabbing all files inside the directory and range adding them to the file list.
+        /// </summary>
+        /// <param name="files">The list of files and directories. Files will be ignored, It will only flatten directories.</param>
+        /// <param name="searchPattern"></param>
+        /// <returns></returns>
+        public static List<FileInfo> FlattenDirectory(List<FileInfo> files, string searchPattern)
+        {
+            var newFiles = new List<FileInfo>(files);
+            // Loops over input files and appends all files inside directories to files
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                var attr = File.GetAttributes(file.FullName);
+                if (!attr.HasFlag(FileAttributes.Directory))
+                {
+                    continue;
+                }
+                // Adds all files from directory to list
+                newFiles.AddRange(new DirectoryInfo(file.FullName).GetFiles(searchPattern));
+                newFiles.RemoveAt(i);
+            }
+            return newFiles;
+        }
     }
 }

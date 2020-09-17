@@ -84,20 +84,7 @@ namespace UniversalUnityHooks.Core.Commands
             modules.Add(new Modules.LowLevelModule());
             _logger.LogDebug($"{modules.Count} Module(s) loaded.");
 
-            // Loops over input files and appends all files inside directories to files
-            for (int i = 0; i < Files.Count; i++)
-            {
-                var file = Files[i];
-                var attr = File.GetAttributes(file.FullName);
-                if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
-                {
-                    continue;
-                }
-                _logger.LogDebug("Input directory: '{file.FullName}' - Adding files from directory");
-                // Adds all files from directory to list
-                Files.AddRange(new DirectoryInfo(file.FullName).GetFiles("*.dll"));
-                Files.RemoveAt(i);
-            }
+            Files = Util.FlattenDirectory(Files, "*.dll");
 
             foreach (var input in Files)
             {
