@@ -44,6 +44,8 @@ namespace UniversalUnityHooks.Core.Commands
         [CommandOption("verbosity", 'v', Description = "The verbosity level currently applied. Possible values: 0 (nothing), 1 - Input file information\n2 - Step by step logs\n3 - Minor extra verbosity\n4 - I/O Access (Reading/writing files & moving files)")]
         public uint Verbosity { get; set; } = 0;
 
+        private readonly ILogger _logger = new Logger<Commands.ExecuteModules>();
+
         private readonly Stopwatch _sw = new Stopwatch();
 
         public ValueTask ExecuteAsync(IConsole _)
@@ -53,7 +55,7 @@ namespace UniversalUnityHooks.Core.Commands
             _logger.LogInformation($"UniversalUnityHooks v{Program.Version}");
             if (Target == null)
             {
-                _logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
+                _logger.LogWarning("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
                 Target = Util.FindAssemblyCSharp(Directory.GetCurrentDirectory());
             }
             _logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'", 3);
