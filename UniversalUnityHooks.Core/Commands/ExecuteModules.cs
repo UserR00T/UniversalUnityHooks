@@ -102,25 +102,29 @@ namespace UniversalUnityHooks.Core.Commands
             return default;
         }
 
+        private void LogAssemblyInfo(ILogger logger, FileInfo file, Assembly assembly)
+        {
+            var name = assembly.GetName();
+            var sb = new StringBuilder();
+            sb.Append("File Name: ".PadRight(15)).AppendLine(file.Name);
+            sb.Append("Name: ".PadRight(15)).AppendLine(name.ToString());
+            sb.Append("ProcessorArch: ".PadRight(15)).AppendLine(name.ProcessorArchitecture.ToString());
+            sb.Append("CLR Version: ".PadRight(15)).AppendLine(assembly.ImageRuntimeVersion);
+            logger.LogDebug(sb.ToString());
+        }
+
         private void ReadAndExecute(FileInfo input, List<IModule> modules, AssemblyDefinition targetDefinition)
         {
             _logger.NewLine();
             _logger.LogDebug($"IO: Reading input file '{input.FullName}'...", 4);
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(input.FullName);
             var inputReflection = Assembly.LoadFrom(input.FullName);
-            var types = assemblyDefinition.MainModule.GetTypes().ToList();
             var name = inputReflection.GetName();
-            var inputLogger = new Logger($"Input::{name.Name}@{name.Version}");
-            var sb = new StringBuilder();
-            sb.Append("File Name: ".PadRight(16)).AppendLine(input.Name);
-            sb.Append("Name: ".PadRight(16)).AppendLine(name.ToString());
-            sb.Append("ProcessorArch: ".PadRight(16)).AppendLine(name.ProcessorArchitecture.ToString());
-            sb.Append("CLR Version: ".PadRight(16)).AppendLine(inputReflection.ImageRuntimeVersion);
-            sb.Append("Detected Types: ".PadRight(16)).Append(types.Count.ToString());
-            inputLogger.LogDebug(sb.ToString());
+            var inputLogger = new Logger($"Input::{name.Name}@{name.Version}", _logger.Settings);
+            LogAssemblyInfo(inputLogger, input, inputReflection);
             var st = new Stopwatch();
             
-            foreach (var type in types)
+            foreach (var type in assemblyDefinition.MainModule.GetTypes())
             {
                 foreach (var method in type.Methods)
                 {
