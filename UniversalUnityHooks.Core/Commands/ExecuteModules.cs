@@ -43,12 +43,11 @@ namespace UniversalUnityHooks.Core.Commands
 
         private readonly ILogger _logger = new Logger("Core");
 
+        private readonly Stopwatch _sw = new Stopwatch();
+
         public ValueTask ExecuteAsync(IConsole _)
         {
-            var totalSw = new Stopwatch();
-            totalSw.Start();
-            // TODO: Fetch version number from csproj
-            _logger.LogInformation("UniversalUnityHooks 3.0");
+            _sw.Start();
             if (Target == null)
             {
                 _logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
@@ -96,7 +95,7 @@ namespace UniversalUnityHooks.Core.Commands
             {
                 CopyInputFiles();
             }
-            _logger.LogInformation($"Operation completed. Operation took {totalSw.ElapsedMilliseconds}ms.");
+            _logger.LogInformation($"Operation completed. Operation took {_sw.ElapsedMilliseconds}ms.");
             return default;
         }
 
