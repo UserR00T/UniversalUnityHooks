@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +59,7 @@ namespace UniversalUnityHooks.Core.Commands
             _logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'", 3);
             // TODO: More asserts, especially on input files
             CliAssert.IsRequired(Target, "Target Assembly (target,t)");
-            CliAssert.IsNotDirectory(Target);
+            CliAssert.IsFile(Target);
             CliAssert.HasExtension(Target, ".dll");
             _logger.LogDebug("Asserts passed, adding resolver...", 2);
             if (AddTargetDirectoryResolve)
