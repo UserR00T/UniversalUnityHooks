@@ -22,21 +22,20 @@ namespace UniversalUnityHooks.Core
         public static void IsDirectory(FileInfo file)
         {
             var attr = File.GetAttributes(file.FullName);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            if (attr.HasFlag(FileAttributes.Directory))
             {
                 return;
             }
             Fail($"{file.FullName} is not a directory.");
         }
 
-        public static void IsNotDirectory(FileInfo file)
+        public static void IsFile(FileInfo file)
         {
-            var attr = File.GetAttributes(file.FullName);
-            if ((attr & FileAttributes.Directory) != FileAttributes.Directory)
+            if (!file.Exists)
             {
                 return;
             }
-            Fail($"{file.FullName} is a directory.");
+            Fail($"{file.FullName} is not a directory.");
         }
 
         public static void HasExtension(FileInfo file, string extension)
