@@ -31,11 +31,11 @@ namespace UniversalUnityHooks.Core
 
         public static void IsFile(FileInfo file)
         {
-            if (!file.Exists)
+            if (file.Exists)
             {
                 return;
             }
-            Fail($"{file.FullName} is not a directory.");
+            Fail($"{file.FullName} is not a file or does not exist.");
         }
 
         public static void HasExtension(FileInfo file, string extension)
