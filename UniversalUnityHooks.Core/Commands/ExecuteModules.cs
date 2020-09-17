@@ -41,19 +41,21 @@ namespace UniversalUnityHooks.Core.Commands
         [CommandOption("addtargetresolver", 'm', Description = "Automatically adds the target parent folder to the assembly resolver.")]
         public bool AddTargetDirectoryResolve { get; set; } = true;
 
-        private readonly ILogger _logger = new Logger("Core");
+        [CommandOption("verbosity", 'v', Description = "The verbosity level currently applied. Possible values: 0 (nothing), 1 - Input file information\n2 - Step by step logs\n3 - Minor extra verbosity\n4 - I/O Access (Reading/writing files & moving files)")]
+        public uint Verbosity { get; set; } = 0;
 
         private readonly Stopwatch _sw = new Stopwatch();
 
         public ValueTask ExecuteAsync(IConsole _)
         {
+            _logger.Settings.DebugVerbosity = (int)Verbosity;
             _sw.Start();
             if (Target == null)
             {
                 _logger.LogInformation("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
                 Target = Util.FindAssemblyCSharp(Directory.GetCurrentDirectory());
             }
-            _logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'");
+            _logger.LogDebug($"Input: '{string.Join(",", Files)}'\nTarget: '{Target}'", 3);
             // TODO: More asserts, especially on input files
             CliAssert.IsRequired(Target, "Target Assembly (target,t)");
             CliAssert.IsNotDirectory(Target);
@@ -66,18 +68,18 @@ namespace UniversalUnityHooks.Core.Commands
             var resolver = Util.CreateAssemblyResolver(ResolveDirectories);
             if (File.Exists(Target.FullName + ".clean"))
             {
-                _logger.LogDebug($"'.clean' File exists, overwriting target assembly with clean file...");
+                _logger.LogDebug($"IO: '.clean' File exists, overwriting target assembly with clean file...", 4);
                 File.Delete(Target.FullName);
                 File.Copy(Target.FullName + ".clean", Target.FullName, true);
             }
-            _logger.LogDebug($"Reading assembly from '{Target.FullName}'...");
+            _logger.LogDebug($"IO: Reading assembly from '{Target.FullName}'...", 4);
             var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName, new ReaderParameters { AssemblyResolver = resolver });
             var modules = new List<IModule>();
             modules.Add(new HookModule());
             modules.Add(new AddMethodModule());
             modules.Add(new ILProcessorModule());
             modules.Add(new Modules.LowLevelModule());
-            _logger.LogDebug($"{modules.Count} Module(s) loaded.");
+            _logger.LogDebug($"{modules.Count} Module(s) loaded.", 2);
 
             Files = Util.FlattenDirectory(Files, "*.dll");
 
@@ -102,7 +104,7 @@ namespace UniversalUnityHooks.Core.Commands
         private void ReadAndExecute(FileInfo input, List<IModule> modules, AssemblyDefinition targetDefinition)
         {
             _logger.NewLine();
-            _logger.LogDebug($"Reading input file '{input.FullName}'...");
+            _logger.LogDebug($"IO: Reading input file '{input.FullName}'...", 4);
             var assemblyDefinition = AssemblyDefinition.ReadAssembly(input.FullName);
             var inputReflection = Assembly.LoadFrom(input.FullName);
             var types = assemblyDefinition.MainModule.GetTypes().ToList();
@@ -162,7 +164,7 @@ namespace UniversalUnityHooks.Core.Commands
             foreach (var input in Files)
             {
                 var to = Path.Combine(Target.DirectoryName, input.Name);
-                _logger.LogDebug($"{input.Name} -> {to}");
+                _logger.LogDebug($"IO: {input.Name} -> {to}", 4);
                 input.CopyTo(to, true);
             }
         }
