@@ -32,15 +32,16 @@ namespace UniversalUnityHooks.Logging
         protected virtual void Log(string prefix, ConsoleColor color, string id, string message)
         {
             prefix += ": ";
-            // TODO: Make this a setting
-            message = message.Replace("\n", $"\n{new string(' ', Math.Max(_minPrefixWidth + 2, prefix.Length))}");
+            if (Settings.AddSpacingAfterNewLine)
+            {
+                message = message.Replace("\n", $"\n{new string(' ', Math.Max(_minPrefixWidth + Settings.MessagePadding, prefix.Length))}");
+            }
             lock (_lock)
             {
                 Util.WriteColored(prefix.PadRight(Math.Max(_minPrefixWidth, prefix.Length), ' '), color);
                 Util.WriteColored(id, ConsoleColor.DarkGray);
                 Console.WriteLine();
-                // TODO: Move hardcoded number to property
-                Console.Write(new string(' ', Math.Max(_minPrefixWidth + 2, prefix.Length)));
+                Console.Write(new string(' ', Math.Max(_minPrefixWidth + Settings.MessagePadding, prefix.Length)));
                 Console.WriteLine(message);
             }
         }
@@ -77,14 +78,22 @@ namespace UniversalUnityHooks.Logging
             Log("crit", ConsoleColor.DarkRed, Id, message);
         }
 
-        // TODO: Show debug depending on variable set
         public void LogDebug(string message)
         {
+            if (Settings.DebugVerbosity < 1)
+            {
+                return;
+            }
             Log("debug", ConsoleColor.DarkGray, Id, message);
         }
 
         public void LogDebug(string message, int verbosity)
-            throw new NotImplementedException();
+        {
+            if (Settings.DebugVerbosity < verbosity)
+            {
+                return;
+            }
+            LogDebug(message);
         }
 
         public void LogError(string message)
