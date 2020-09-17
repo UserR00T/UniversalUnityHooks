@@ -28,7 +28,7 @@ namespace UniversalUnityHooks.Core.Commands
         public FileInfo Target { get; set; }
 
         [CommandOption("resolve", 'r', Description = "Extra references shall be resolved from these folders. You most likely want to also reference the TargetAssembly folder as most references will be located in that folder.")]
-        public List<FileInfo> ResolveDirectories { get; set; } = new List<FileInfo>();
+        public List<DirectoryInfo> ResolveDirectories { get; set; } = new List<DirectoryInfo>();
 
         [CommandOption("copyinput", 'c', Description = "Should the program copy the input files to the target dll folder?")]
         public bool CopyToTarget { get; set; } = true;
