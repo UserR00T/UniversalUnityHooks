@@ -11,13 +11,20 @@ namespace UniversalUnityHooks.Logging
 
         public virtual string Id { get; }
 
+        public LoggerSettings Settings { get; }
+
         private int _minPrefixWidth = "debug: ".Length;
 
         public Logger()
         {
         }
 
-        public Logger(string id)
+        public Logger(LoggerSettings settings) : this()
+        {
+            Settings = settings ?? new LoggerSettings();
+        }
+
+        public Logger(string id, LoggerSettings settings = null) : this(settings)
         {
             Id = id;
         }

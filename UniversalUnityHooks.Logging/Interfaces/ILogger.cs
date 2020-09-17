@@ -6,6 +6,8 @@ namespace UniversalUnityHooks.Logging.Interfaces
     {
         string Id { get; }
 
+        LoggerSettings Settings { get; }
+
         void Log(LogLevel level, string message);
 
         void LogDebug(string message);
