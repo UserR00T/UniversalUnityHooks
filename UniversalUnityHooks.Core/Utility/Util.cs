@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using Mono.Cecil;
 
 namespace UniversalUnityHooks.Core.Utility
 {
@@ -52,6 +54,21 @@ namespace UniversalUnityHooks.Core.Utility
                 newFiles.RemoveAt(i);
             }
             return newFiles;
+        }
+        
+        /// <summary>
+        /// Generates a assembly resolver and adds the directories specified as parameter.
+        /// </summary>
+        /// <param name="directories">The directories that will be added to the resolver.</param>
+        /// <returns>Returns a instance of <see cref="Mono.Cecil.DefaultAssemblyResolver"/> with the searching directories added.</returns>
+        public static DefaultAssemblyResolver CreateAssemblyResolver(List<DirectoryInfo> directories)
+        {
+            var resolver = new DefaultAssemblyResolver();
+            foreach (var resolveDirectory in directories)
+            {
+                resolver.AddSearchDirectory(resolveDirectory.FullName);
+            }
+            return resolver;
         }
     }
 }

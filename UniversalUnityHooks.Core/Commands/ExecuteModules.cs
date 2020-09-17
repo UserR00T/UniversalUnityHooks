@@ -59,16 +59,12 @@ namespace UniversalUnityHooks.Core.Commands
             CliAssert.IsRequired(Target, "Target Assembly (target,t)");
             CliAssert.IsNotDirectory(Target);
             CliAssert.HasExtension(Target, ".dll");
-            _logger.LogDebug("Asserts passed, adding resolver...");
-            var resolver = new DefaultAssemblyResolver();
-            foreach (var resolveDirectory in ResolveDirectories)
-            {
-                resolver.AddSearchDirectory(resolveDirectory.FullName);
-            }
+            _logger.LogDebug("Asserts passed, adding resolver...", 2);
             if (AddTargetDirectoryResolve)
             {
-                resolver.AddSearchDirectory(Target.DirectoryName);
+                ResolveDirectories.Add(Target.Directory);
             }
+            var resolver = Util.CreateAssemblyResolver(ResolveDirectories);
             if (File.Exists(Target.FullName + ".clean"))
             {
                 _logger.LogDebug($"'.clean' File exists, overwriting target assembly with clean file...");
