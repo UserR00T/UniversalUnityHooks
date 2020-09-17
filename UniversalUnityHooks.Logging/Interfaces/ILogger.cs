@@ -12,7 +12,7 @@ namespace UniversalUnityHooks.Logging.Interfaces
 
         void LogDebug(string message);
 
-        void LogDebug(string message, int debugLevel);
+        void LogDebug(string message, int verbosity);
 
         void LogInformation(string message);
 
