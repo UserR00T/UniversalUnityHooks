@@ -1,6 +1,6 @@
 namespace UniversalUnityHooks.Logging
 {
-    public class LoggingSettings
+    public class LoggerSettings
     {
         /// <summary>
         /// Determines if the logging should parse '\n' characters and add spacing to the start of it.
