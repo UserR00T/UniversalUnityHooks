@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -51,6 +52,7 @@ namespace UniversalUnityHooks.Core.Commands
             _logger.Settings.DebugVerbosity = (int)Verbosity;
             _sw.Start();
             _logger.LogInformation($"UniversalUnityHooks v{Program.Version}");
+            _logger.LogDebug($"System Version: {Environment.OSVersion}", 3);
             if (Target == null)
             {
                 _logger.LogWarning("Target is null, defaulting to '?_Data/Managed/Assembly-CSharp.dll'.");
@@ -156,22 +158,23 @@ namespace UniversalUnityHooks.Core.Commands
 
         private void WriteChanges(AssemblyDefinition targetDefinition)
         {
-            _logger.LogInformation("Writing changes to target assembly...");
+            _logger.LogDebug("IO: Writing changes to target assembly...", 4);
             File.Copy(Target.FullName, Target.FullName + ".clean", true);
             File.Delete(Target.FullName);
             targetDefinition.Write(Target.FullName);
-            _logger.LogInformation("Changes written!");
+            _logger.LogInformation("Changes written to target assembly.");
         }
 
         private void CopyInputFiles()
         {
-            _logger.LogInformation("Copying files to target...");
+            _logger.LogDebug("Copying files to target...", 4);
             foreach (var input in Files)
             {
                 var to = Path.Combine(Target.DirectoryName, input.Name);
                 _logger.LogDebug($"IO: {input.Name} -> {to}", 4);
                 input.CopyTo(to, true);
             }
+            _logger.LogInformation("Files copied to target.");
         }
     }
 }
