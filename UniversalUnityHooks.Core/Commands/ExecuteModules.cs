@@ -40,7 +40,7 @@ namespace UniversalUnityHooks.Core.Commands
         [CommandOption("addtargetresolver", 'm', Description = "Automatically adds the target parent folder to the assembly resolver.")]
         public bool AddTargetDirectoryResolve { get; set; } = true;
 
-        [CommandOption("verbosity", 'v', Description = "The verbosity level currently applied. Possible values: 0 (nothing), 1 - Input file information\n2 - Step by step logs\n3 - Minor extra verbosity\n4 - I/O Access (Reading/writing files & moving files)")]
+        [CommandOption("verbosity", 'v', Description = "The verbosity level currently applied. Possible values: 0 (nothing)\n                    1 - Input file information\n                    2 - Step by step logs\n                    3 - Minor extra verbosity\n                    4 - I/O Access (Reading/writing files & moving files)")]
         public uint Verbosity { get; set; } = 0;
 
         private readonly ILogger _logger = new Logger<Commands.ExecuteModules>();
