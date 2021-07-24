@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CliFx;
 using CliFx.Attributes;
+using CliFx.Infrastructure;
 using Mono.Cecil;
 using UniversalUnityHooks.Core.Interfaces;
 using UniversalUnityHooks.Core.Modules;
