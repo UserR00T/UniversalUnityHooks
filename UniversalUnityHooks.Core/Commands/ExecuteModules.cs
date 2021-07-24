@@ -146,7 +146,7 @@ namespace UniversalUnityHooks.Core.Commands
                             st.Reset();
                             _logger.NewLine();
                             inputLogger.LogInformation($"Found attribute '{module.GetType().Name}<{customAttribute.AttributeType.Name}>' attached to method '{type.FullName}.{method.Name}'.");
-                            var methodInfo = inputReflection.GetType(type.FullName).GetMethod(method.Name);
+                            var methodInfo = inputReflection.GetType(type.FullName, true).GetMethod(method.Name);
                             st.Start();
                             module.Execute(method, methodInfo, type, assemblyDefinition, targetDefinition);
                             inputLogger.LogInformation($"Module executed in {st.ElapsedMilliseconds}ms.");
