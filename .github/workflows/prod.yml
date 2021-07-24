@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Setup .NET Core 5.0
+      - name: Setup .NET Core 5.x
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: 5.0
+          dotnet-version: 5.x
       - name: Install dependencies
         run: dotnet restore UniversalUnityHooks.Core/UniversalUnityHooks.Core.csproj
       - name: Build
