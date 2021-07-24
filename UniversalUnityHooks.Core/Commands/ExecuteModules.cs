@@ -76,7 +76,7 @@ namespace UniversalUnityHooks.Core.Commands
                 File.Copy(Target.FullName + ".clean", Target.FullName, true);
             }
             _logger.LogDebug($"IO: Reading assembly from '{Target.FullName}'...", 4);
-            var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName, new ReaderParameters { AssemblyResolver = resolver });
+            var targetDefinition = AssemblyDefinition.ReadAssembly(Target.FullName, new ReaderParameters { AssemblyResolver = resolver, InMemory = true, ReadWrite = false });
             var modules = new List<IModule>();
             modules.Add(new HookModule());
             modules.Add(new AddMethodModule());
