@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: UniversalUnityHooks.Core.${{github.sha}}-b${{github.run_number}}
-          path: UniversalUnityHooks.Core/bin/Release/netcoreapp3.1/
+          path: UniversalUnityHooks.Core/bin/Release/net5.0/
