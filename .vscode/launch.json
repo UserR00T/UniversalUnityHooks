@@ -6,10 +6,10 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/UniversalUnityHooks.Core/bin/Debug/netcoreapp3.1/UniversalUnityHooks.Core.dll",
+            "program": "${workspaceFolder}/UniversalUnityHooks.Core/bin/Debug/net5.0/UniversalUnityHooks.Core.dll",
             "args": ["execute",
-                     "-i", "../UniversalUnityHooks.Sample.Input/bin/Debug/netcoreapp3.1/UniversalUnityHooks.Sample.Input.dll",
-                     "-t", "../UniversalUnityHooks.Sample.Target/bin/Debug/netcoreapp3.1/UniversalUnityHooks.Sample.Target.dll"],
+                     "-i", "../UniversalUnityHooks.Sample.Input/bin/Debug/net5.0/UniversalUnityHooks.Sample.Input.dll",
+                     "-t", "../UniversalUnityHooks.Sample.Target/bin/Debug/net5.0/UniversalUnityHooks.Sample.Target.dll"],
             "cwd": "${workspaceFolder}/UniversalUnityHooks.Core",
             "console": "internalConsole",
             "stopAtEntry": false
