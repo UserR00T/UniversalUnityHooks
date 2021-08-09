@@ -59,7 +59,7 @@ namespace UniversalUnityHooks.Sample.Input
             awesomeString = "hijacked your string :)";
         }
 
-        [FluentInjectorModule]
+        [FluentInjector]
         public static void FluentInjectorModule(Injector injector)
         {
             // Changes 'publicInt' from 'public' to 'private'.

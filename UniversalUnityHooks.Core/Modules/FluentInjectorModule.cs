@@ -5,12 +5,12 @@ using UniversalUnityHooks.Core.FluentInjector;
 namespace UniversalUnityHooks.Core.Modules
 {
     /// <summary>
-    /// The module handler for the <see cref="UniversalUnityHooks.Attributes.FluentInjectorModuleAttribute" />
+    /// The module handler for the <see cref="UniversalUnityHooks.Attributes.FluentInjectorAttribute" />
     /// </summary>
-    public class FluentInjectorModule : Module<FluentInjectorModuleAttribute>
+    public class FluentInjectorModule : Module<FluentInjectorAttribute>
     {
         /// <inheritdoc/>
-        public override void Execute(FluentInjectorModuleAttribute attribute)
+        public override void Execute(FluentInjectorAttribute attribute)
         {
             var injector = new Injector(ExecutingAssembly, TargetAssembly);
             if (!MethodInfo.IsStatic)
