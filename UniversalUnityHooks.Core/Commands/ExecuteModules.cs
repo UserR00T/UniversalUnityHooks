@@ -82,7 +82,7 @@ namespace UniversalUnityHooks.Core.Commands
             modules.Add(new HookModule());
             modules.Add(new AddMethodModule());
             modules.Add(new ILProcessorModule());
-            modules.Add(new Modules.LowLevelModule());
+            modules.Add(new Modules.FluentInjectorModule());
             _logger.LogDebug($"{modules.Count} Module(s) loaded.", 2);
 
             Files = Util.FlattenDirectory(Files, "*.dll");
@@ -126,7 +126,7 @@ namespace UniversalUnityHooks.Core.Commands
             var inputLogger = new Logger($"Input::{name.Name}@{name.Version}", _logger.Settings);
             LogAssemblyInfo(inputLogger, input, inputReflection);
             var st = new Stopwatch();
-            
+
             foreach (var type in assemblyDefinition.MainModule.GetTypes())
             {
                 foreach (var method in type.Methods)

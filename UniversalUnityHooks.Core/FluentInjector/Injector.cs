@@ -1,13 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Reflection;
 using Mono.Cecil;
 using Mono.Cecil.Inject;
-using UniversalUnityHooks.Attributes;
 using UniversalUnityHooks.Core.Models;
 
-namespace UniversalUnityHooks.Core.LowLevelModule
+namespace UniversalUnityHooks.Core.FluentInjector
 {
     // TODO: Use CliAssert for null asserts
     public class Injector

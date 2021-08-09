@@ -1,7 +1,7 @@
 ﻿using System;
 using UniversalUnityHooks.Attributes;
 using UniversalUnityHooks.Sample.Target;
-using UniversalUnityHooks.Core.LowLevelModule;
+using UniversalUnityHooks.Core.FluentInjector;
 using UniversalUnityHooks.Core.Models;
 
 namespace UniversalUnityHooks.Sample.Input
@@ -59,8 +59,8 @@ namespace UniversalUnityHooks.Sample.Input
             awesomeString = "hijacked your string :)";
         }
 
-        [LowLevelModule]
-        public static void LowLevelModule(Injector injector)
+        [FluentInjectorModule]
+        public static void FluentInjectorModule(Injector injector)
         {
             // Changes 'publicInt' from 'public' to 'private'.
             injector.Target<ExampleType>(x => nameof(x.publicInt)).ChangeAccess(false);

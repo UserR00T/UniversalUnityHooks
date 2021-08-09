@@ -1,26 +1,26 @@
 using UniversalUnityHooks.Attributes;
 using UniversalUnityHooks.Core.Abstractions;
-using UniversalUnityHooks.Core.LowLevelModule;
+using UniversalUnityHooks.Core.FluentInjector;
 
 namespace UniversalUnityHooks.Core.Modules
 {
     /// <summary>
-    /// The module handler for the <see cref="UniversalUnityHooks.Attributes.LowLevelModuleAttribute" />
+    /// The module handler for the <see cref="UniversalUnityHooks.Attributes.FluentInjectorModuleAttribute" />
     /// </summary>
-    public class LowLevelModule : Module<LowLevelModuleAttribute>
+    public class FluentInjectorModule : Module<FluentInjectorModuleAttribute>
     {
         /// <inheritdoc/>
-        public override void Execute(LowLevelModuleAttribute attribute)
+        public override void Execute(FluentInjectorModuleAttribute attribute)
         {
             var injector = new Injector(ExecutingAssembly, TargetAssembly);
             if (!MethodInfo.IsStatic)
             {
-                CliAssert.Fail("The LowLevelModule method must be static.");
+                CliAssert.Fail("The FluentInjectorModule method must be static.");
             }
             var parameters = MethodInfo.GetParameters();
             if (parameters.Length != 1 || parameters[0].ParameterType != typeof(Injector))
             {
-                CliAssert.Fail("The LowLevelModule method must exactly have one argument, of type 'Injector'.");
+                CliAssert.Fail("The FluentInjectorModule method must exactly have one argument, of type 'Injector'.");
             }
             MethodInfo.Invoke(null, new object[] { injector });
         }
