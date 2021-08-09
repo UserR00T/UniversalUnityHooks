@@ -82,7 +82,7 @@ namespace UniversalUnityHooks.Core.Commands
             modules.Add(new HookModule());
             modules.Add(new AddMethodModule());
             modules.Add(new ILProcessorModule());
-            modules.Add(new Modules.FluentInjectorModule());
+            modules.Add(new FluentInjectorModule());
             _logger.LogDebug($"{modules.Count} Module(s) loaded.", 2);
 
             Files = Util.FlattenDirectory(Files, "*.dll");
